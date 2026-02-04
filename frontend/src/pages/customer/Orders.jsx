@@ -25,6 +25,73 @@ const Orders = () => {
       fetchOrders();
   }, []);
 
+  /* State for Return/Exchange Modal */
+  const [returnModal, setReturnModal] = useState({
+      isOpen: false,
+      orderId: null,
+      itemId: null,
+      itemImage: null,
+      itemName: null
+  });
+  const [returnType, setReturnType] = useState('return');
+  const [returnReason, setReturnReason] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleReturnRequest = async (e) => {
+      e.preventDefault();
+      setIsSubmitting(true);
+      
+      try {
+          const token = localStorage.getItem('token'); // Assuming token is here as per previous context
+          const response = await fetch(`/api/orders/${returnModal.orderId}/return`, {
+             method: 'POST',
+             headers: {
+                 'Content-Type': 'application/json',
+                 'Authorization': `Bearer ${token}`
+             },
+             body: JSON.stringify({
+                 itemId: returnModal.itemId,
+                 type: returnType,
+                 reason: returnReason
+             })
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+              toast.success('Request submitted successfully');
+              setReturnModal({ ...returnModal, isOpen: false });
+              setReturnReason('');
+              setReturnType('return');
+              
+              // Refresh orders
+              const ordersData = await getMyOrders();
+              setOrders(ordersData);
+              
+              // Update selected order view if open
+              const updatedOrder = ordersData.find(o => o._id === selectedOrder._id);
+              if (updatedOrder) setSelectedOrder(updatedOrder);
+
+          } else {
+              toast.error(data.message || 'Request failed');
+          }
+      } catch (error) {
+          toast.error('Something went wrong');
+      } finally {
+          setIsSubmitting(false);
+      }
+  };
+
+  const openReturnModal = (orderId, item) => {
+      setReturnModal({
+          isOpen: true,
+          orderId,
+          itemId: item._id,
+          itemImage: item.image,
+          itemName: item.name
+      });
+  };
+
   if (loading) {
       return (
           <div className="flex justify-center items-center h-64">
@@ -85,7 +152,7 @@ const Orders = () => {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 overflow-y-auto">
             <div className="bg-white rounded-2xl w-full max-w-2xl overflow-hidden shadow-2xl animate-fade-in relative">
                 {/* Header */}
-                <div className="bg-gray-50 p-6 border-b border-gray-100 flex justify-between items-center sticky top-0 bg-opacity-95 backdrop-blur">
+                <div className="bg-gray-50 p-6 border-b border-gray-100 flex justify-between items-center sticky top-0 bg-opacity-95 backdrop-blur z-10">
                     <div>
                         <h2 className="text-xl font-bold text-gray-900">Order Details</h2>
                         <p className="text-sm text-gray-500">ID: #{selectedOrder._id}</p>
@@ -108,15 +175,41 @@ const Orders = () => {
 
                     {/* Order Items */}
                     <h3 className="font-bold text-gray-900 mb-3">Items</h3>
-                    <div className="space-y-3 mb-6">
+                    <div className="space-y-4 mb-6">
                         {selectedOrder.orderItems.map((item, idx) => (
-                            <div key={idx} className="flex gap-4 p-3 border border-gray-100 rounded-lg">
-                                <img src={item.image} alt={item.name} className="w-16 h-16 object-cover rounded bg-gray-100" />
-                                <div className="flex-1">
-                                    <h4 className="font-medium text-gray-900 line-clamp-1">{item.name}</h4>
-                                    <p className="text-sm text-gray-500">Qty: {item.quantity} × ${item.price}</p>
+                            <div key={idx} className="flex flex-col sm:flex-row gap-4 p-4 border border-gray-100 rounded-xl bg-gray-50/50">
+                                <div className="flex gap-4 flex-1">
+                                    <img src={item.image} alt={item.name} className="w-16 h-16 object-cover rounded bg-white border border-gray-200" />
+                                    <div>
+                                        <h4 className="font-medium text-gray-900 line-clamp-2">{item.name}</h4>
+                                        <p className="text-sm text-gray-500 mt-1">Qty: {item.quantity} × ${item.price}</p>
+                                    </div>
                                 </div>
-                                <p className="font-bold">${(item.price * item.quantity).toFixed(2)}</p>
+                                <div className="text-right flex flex-col justify-between items-end">
+                                    <p className="font-bold text-gray-900">${(item.price * item.quantity).toFixed(2)}</p>
+                                    
+                                    {/* Return/Exchange Logic */}
+                                    {selectedOrder.isDelivered && (
+                                       <div className="mt-2">
+                                          {item.returnExchange?.status && item.returnExchange.status !== 'none' ? (
+                                              <span className={`px-2 py-1 text-xs font-bold uppercase rounded-md ${
+                                                 item.returnExchange.status === 'approved' ? 'bg-green-100 text-green-700' :
+                                                 item.returnExchange.status === 'rejected' ? 'bg-red-100 text-red-700' :
+                                                 'bg-orange-100 text-orange-700'
+                                              }`}>
+                                                  {item.returnExchange.type}: {item.returnExchange.status}
+                                              </span>
+                                          ) : (
+                                              <button 
+                                                 onClick={() => openReturnModal(selectedOrder._id, item)}
+                                                 className="text-xs font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg transition-colors border border-blue-200"
+                                              >
+                                                 Return / Exchange
+                                              </button>
+                                          )}
+                                       </div>
+                                    )}
+                                </div>
                             </div>
                         ))}
                     </div>
@@ -151,6 +244,70 @@ const Orders = () => {
                 </div>
             </div>
         </div>
+      )}
+
+      {/* Return Request Modal */}
+      {returnModal.isOpen && (
+         <div className="fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-[60] backdrop-blur-sm">
+            <div className="bg-white rounded-2xl w-full max-w-md p-6 shadow-2xl animate-in fade-in zoom-in duration-200">
+               <h3 className="text-xl font-bold text-gray-900 mb-4">Request Action</h3>
+               
+               <div className="flex items-center gap-4 mb-6 p-3 bg-gray-50 rounded-xl border border-gray-100">
+                  <img src={returnModal.itemImage} alt="" className="w-12 h-12 rounded bg-white object-cover" />
+                  <p className="font-medium text-sm line-clamp-2">{returnModal.itemName}</p>
+               </div>
+
+               <form onSubmit={handleReturnRequest} className="space-y-4">
+                  <div>
+                     <label className="block text-sm font-medium text-gray-700 mb-2">I want to...</label>
+                     <div className="grid grid-cols-3 gap-2">
+                        {['return', 'exchange', 'cancel'].map((type) => (
+                           <button
+                              key={type}
+                              type="button"
+                              onClick={() => setReturnType(type)}
+                              className={`px-3 py-2 text-sm font-medium rounded-lg border capitalize transition-all ${
+                                 returnType === type 
+                                 ? 'bg-blue-600 text-white border-blue-600 shadow-md ring-2 ring-blue-200' 
+                                 : 'bg-white text-gray-600 border-gray-200 hover:bg-gray-50'
+                              }`}
+                           >
+                              {type}
+                           </button>
+                        ))}
+                     </div>
+                  </div>
+
+                  <div>
+                     <label className="block text-sm font-medium text-gray-700 mb-2">Reason (Required)</label>
+                     <textarea 
+                        required
+                        value={returnReason}
+                        onChange={(e) => setReturnReason(e.target.value)}
+                        placeholder="Please explain why you want to return or exchange..."
+                        className="w-full px-3 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 min-h-[100px] text-sm"
+                     />
+                  </div>
+
+                  <div className="flex gap-3 pt-2">
+                     <button 
+                        type="button" 
+                        onClick={() => setReturnModal({ ...returnModal, isOpen: false })}
+                        className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 font-medium rounded-xl hover:bg-gray-50"
+                     >
+                        Cancel
+                     </button>
+                     <button 
+                        type="submit" 
+                        disabled={isSubmitting}
+                        className="flex-1 px-4 py-2 bg-blue-600 text-white font-medium rounded-xl hover:bg-blue-700 disabled:opacity-70 disabled:cursor-not-allowed shadow-lg shadow-blue-500/30"
+                     >
+                        {isSubmitting ? 'Submitting...' : 'Submit Request'}
+                     </button>
+                  </div>
+               </form>
+            </div>
+         </div>
       )}
     </div>
   );

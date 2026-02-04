@@ -17,7 +17,13 @@ const orderSchema = mongoose.Schema({
         required: true,
         ref: 'Product',
       },
-      vendor: { type: String }, 
+      vendor: { type: String },
+      returnExchange: {
+        type: { type: String, enum: ['cancel', 'return', 'exchange', 'none'], default: 'none' },
+        reason: { type: String },
+        status: { type: String, enum: ['pending', 'approved', 'rejected', 'none'], default: 'none' },
+        requestedAt: { type: Date }
+      }
     },
   ],
   shippingAddress: {

@@ -1,4 +1,5 @@
 const asyncHandler = require('express-async-handler');
+const bcrypt = require('bcryptjs');
 const User = require('../MODELS/userModel');
 
 // @desc    Get all users
@@ -105,11 +106,47 @@ const updateUser = asyncHandler(async (req, res) => {
   }
 });
 
+// @desc    Update user profile
+// @route   PUT /api/users/profile
+// @access  Private
+const updateUserProfile = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.user._id);
+
+  if (user) {
+    user.name = req.body.name || user.name;
+    user.email = req.body.email || user.email;
+    
+    if (req.body.password) {
+      const salt = await bcrypt.genSalt(10);
+      user.password = await bcrypt.hash(req.body.password, salt);
+    }
+
+    if (req.file) {
+      user.profileImage = `/uploads/${req.file.filename}`;
+    }
+
+    const updatedUser = await user.save();
+
+    res.json({
+      _id: updatedUser._id,
+      name: updatedUser.name,
+      email: updatedUser.email,
+      role: updatedUser.role,
+      profileImage: updatedUser.profileImage,
+      token: req.headers.authorization.split(' ')[1] // Keep existing token
+    });
+  } else {
+    res.status(404);
+    throw new Error('User not found');
+  }
+});
+
 module.exports = {
   getUsers,
   deleteUser,
   getUserById,
   updateUser,
+  updateUserProfile,
   addAddress,
   deleteAddress,
 };

@@ -108,6 +108,78 @@ const getOrders = asyncHandler(async (req, res) => {
   res.json(orders);
 });
 
+// @desc    Request return or exchange
+// @route   POST /api/orders/:id/return
+// @access  Private
+const requestReturnExchange = asyncHandler(async (req, res) => {
+  const { itemId, type, reason } = req.body;
+  const order = await Order.findById(req.params.id);
+
+  if (order) {
+    // Verify user owns order
+    if (order.user.toString() !== req.user._id.toString()) {
+      res.status(401);
+      throw new Error('Not authorized to manage this order');
+    }
+
+    if (!order.isDelivered) {
+       res.status(400);
+       throw new Error('Order must be delivered to request return/exchange');
+    }
+
+    const item = order.orderItems.find(x => x._id.toString() === itemId);
+
+    if (!item) {
+      res.status(404);
+      throw new Error('Item not found in order');
+    }
+
+    if (item.returnExchange.status !== 'none') {
+      res.status(400);
+      throw new Error('A request has already been made for this item');
+    }
+
+    item.returnExchange = {
+      type,
+      reason,
+      status: 'pending',
+      requestedAt: Date.now()
+    };
+
+    await order.save();
+    res.json({ message: 'Request submitted successfully' });
+
+  } else {
+    res.status(404);
+    throw new Error('Order not found');
+  }
+});
+
+// @desc    Update return/exchange status
+// @route   PUT /api/orders/:id/return-status
+// @access  Private/Admin
+const updateReturnExchangeStatus = asyncHandler(async (req, res) => {
+  const { itemId, status } = req.body;
+  const order = await Order.findById(req.params.id);
+
+  if (order) {
+    const item = order.orderItems.find(x => x._id.toString() === itemId);
+
+    if (!item) {
+      res.status(404);
+      throw new Error('Item not found');
+    }
+
+    item.returnExchange.status = status;
+    
+    await order.save();
+    res.json(order);
+  } else {
+    res.status(404);
+    throw new Error('Order not found');
+  }
+});
+
 module.exports = {
   addOrderItems,
   getOrderById,
@@ -115,4 +187,6 @@ module.exports = {
   updateOrderToDelivered,
   getMyOrders,
   getOrders,
+  requestReturnExchange,
+  updateReturnExchangeStatus
 };

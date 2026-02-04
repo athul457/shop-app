@@ -113,15 +113,69 @@ const AdminProducts = () => {
         setFormData({ ...formData, [e.target.name]: value });
     };
 
+    const [searchTerm, setSearchTerm] = useState('');
+    const [searchCategory, setSearchCategory] = useState('name'); // name, category, price, stock, status
+
+    const filteredProducts = products.filter(product => {
+        if (!searchTerm) return true;
+        
+        const term = searchTerm.toLowerCase();
+        
+        switch(searchCategory) {
+            case 'name':
+                return product.name?.toLowerCase().includes(term);
+            case 'category':
+                return product.category?.toLowerCase().includes(term);
+            case 'price':
+                return product.price?.toString().includes(term);
+            case 'stock':
+                return product.stock?.toString().includes(term);
+            case 'status':
+                const status = product.isApproved ? 'approved' : 'pending';
+                return status.includes(term);
+            default:
+                return true;
+        }
+    });
+
     if (loading) return <div className="p-6 text-center">Loading products...</div>;
 
     return (
         <div className="p-6">
-            <div className="flex justify-between items-center mb-6">
-                <h1 className="text-2xl font-bold">Products Management</h1>
-                <button onClick={() => openModal()} className="bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-blue-700">
-                    <Plus size={18} /> Add Product
-                </button>
+            <div className="sticky top-15 z-30 bg-gray-50/95 backdrop-blur pt-6 pb-6 -mx-6 px-6 border-b border-gray-200 mb-6 shadow-sm">
+                <div className="flex justify-between items-center mb-6">
+                    <h1 className="text-2xl font-bold">Products Management</h1>
+                    <button onClick={() => openModal()} className="bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-blue-700 shadow-lg hover:shadow-xl transition-all active:scale-95 transform hover:-translate-y-0.5">
+                        <Plus size={18} /> Add Product
+                    </button>
+                </div>
+
+                {/* Filter / Search Bar */}
+                <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex gap-4">
+                    <select 
+                        value={searchCategory} 
+                        onChange={(e) => setSearchCategory(e.target.value)}
+                        className="px-4 py-2 border border-gray-200 rounded-lg text-sm bg-gray-50 focus:ring-2 focus:ring-blue-100 outline-none cursor-pointer font-medium"
+                    >
+                        <option value="name">Name</option>
+                        <option value="category">Category</option>
+                        <option value="price">Price</option>
+                        <option value="stock">Stock</option>
+                        <option value="status">Status</option>
+                    </select>
+                    <div className="flex-1 relative">
+                        <input 
+                            type="text" 
+                            placeholder={`Search by ${searchCategory}...`}
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-100 outline-none"
+                        />
+                        <div className="absolute left-3 top-2.5 text-gray-400">
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             {/* Product Table */}
@@ -139,7 +193,7 @@ const AdminProducts = () => {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-100">
-                            {products.map((product) => (
+                            {filteredProducts.map((product) => (
                                 <tr key={product._id} className="hover:bg-gray-50">
                                     <td className="p-4">
                                         <div className="flex items-center gap-3">

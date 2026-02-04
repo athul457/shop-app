@@ -6,7 +6,7 @@ import toast from 'react-hot-toast';
 import { createOrder } from '../../api/order.api';
 
 const Payment = () => {
-  const { cartItems } = useCart();
+  const { cartItems, clearCart } = useCart();
   const navigate = useNavigate();
   const [paymentMethod, setPaymentMethod] = useState('cod');
   const [isProcessing, setIsProcessing] = useState(false);
@@ -56,8 +56,8 @@ const Payment = () => {
         await createOrder(orderData);
         toast.success("Order Placed Successfully!");
         
-        // Clear cart (Optional but recommended, need to export clearCart from context)
-        // clearCart(); 
+        // Clear cart
+        clearCart();
         
         navigate('/dashboard/orders');
     } catch (error) {

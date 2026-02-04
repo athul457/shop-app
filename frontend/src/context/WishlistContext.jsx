@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
 
 const WishlistContext = createContext();
@@ -6,7 +6,19 @@ const WishlistContext = createContext();
 export const useWishlist = () => useContext(WishlistContext);
 
 export const WishlistProvider = ({ children }) => {
-  const [wishlistItems, setWishlistItems] = useState([]);
+  const [wishlistItems, setWishlistItems] = useState(() => {
+    try {
+      const savedWishlist = localStorage.getItem('wishlistItems');
+      return savedWishlist ? JSON.parse(savedWishlist) : [];
+    } catch (error) {
+      console.error('Error reading wishlist from localStorage:', error);
+      return [];
+    }
+  });
+
+  useEffect(() => {
+    localStorage.setItem('wishlistItems', JSON.stringify(wishlistItems));
+  }, [wishlistItems]);
 
   const addToWishlist = (product) => {
     setWishlistItems(prev => {

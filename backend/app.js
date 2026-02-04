@@ -9,6 +9,7 @@ app.use(cors({
 }));
 app.use(morgan("dev"));
 app.use(express.json());
+app.use('/uploads', express.static('uploads'));
 
 app.use("/api/auth", require("./ROUTES/authRoutes"));
 app.use("/api/reviews", require("./ROUTES/reviewRoutes"));

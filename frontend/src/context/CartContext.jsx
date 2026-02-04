@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
 
 const CartContext = createContext();
@@ -8,7 +8,21 @@ export const useCart = () => useContext(CartContext);
 export const CartProvider = ({ children }) => {
   // Initialize with Dummy Data for Demo
   // Initialize cart with empty array
-  const [cartItems, setCartItems] = useState([]);
+  // Initialize cart from localStorage
+  const [cartItems, setCartItems] = useState(() => {
+    try {
+      const savedCart = localStorage.getItem('cartItems');
+      return savedCart ? JSON.parse(savedCart) : [];
+    } catch (error) {
+      console.error('Error reading cart from localStorage:', error);
+      return [];
+    }
+  });
+
+  // Persist cart to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem('cartItems', JSON.stringify(cartItems));
+  }, [cartItems]);
 
   const addToCart = (product) => {
     setCartItems(prev => {
@@ -37,10 +51,15 @@ export const CartProvider = ({ children }) => {
      }));
   };
 
+  const clearCart = () => {
+    setCartItems([]);
+    localStorage.removeItem('cartItems');
+  };
+
   const cartCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
 
   return (
-    <CartContext.Provider value={{ cartItems, addToCart, removeFromCart, updateQuantity, cartCount }}>
+    <CartContext.Provider value={{ cartItems, addToCart, removeFromCart, updateQuantity, clearCart, cartCount }}>
       {children}
     </CartContext.Provider>
   );

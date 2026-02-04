@@ -44,6 +44,28 @@ const AdminUsers = () => {
         }
     };
 
+    const [searchTerm, setSearchTerm] = useState('');
+    const [searchCategory, setSearchCategory] = useState('name'); // name, email, _id
+
+    const filteredUsers = users.filter(user => {
+        if (!searchTerm) return true;
+        
+        const term = searchTerm.toLowerCase();
+        
+        switch(searchCategory) {
+            case 'name':
+                return user.name?.toLowerCase().includes(term);
+            case 'email':
+                return user.email?.toLowerCase().includes(term);
+            case '_id':
+                return user._id.toLowerCase().includes(term);
+            case 'role':
+                return user.role.toLowerCase().includes(term);
+            default:
+                return true;
+        }
+    });
+
     if (loading) {
         return (
             <div className="flex justify-center items-center h-64">
@@ -55,6 +77,32 @@ const AdminUsers = () => {
     return (
         <div className="p-6">
             <h1 className="text-2xl font-bold mb-6">Users Management</h1>
+
+            {/* Filter / Search Bar */}
+            <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 mb-6 flex gap-4">
+                <select 
+                    value={searchCategory} 
+                    onChange={(e) => setSearchCategory(e.target.value)}
+                    className="px-4 py-2 border border-gray-200 rounded-lg text-sm bg-gray-50 focus:ring-2 focus:ring-blue-100 outline-none cursor-pointer font-medium"
+                >
+                    <option value="name">Name</option>
+                    <option value="email">Email</option>
+                    <option value="_id">User ID</option>
+                    <option value="role">Role</option>
+                </select>
+                <div className="flex-1 relative">
+                    <input 
+                        type="text" 
+                        placeholder={`Search by ${searchCategory === '_id' ? 'User ID' : searchCategory}...`}
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-100 outline-none"
+                    />
+                    <div className="absolute left-3 top-2.5 text-gray-400">
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                    </div>
+                </div>
+            </div>
 
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
                 <div className="overflow-x-auto">
@@ -69,7 +117,7 @@ const AdminUsers = () => {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-100">
-                            {users.map((user) => (
+                            {filteredUsers.map((user) => (
                                 <tr key={user._id} className="hover:bg-gray-50">
                                     <td className="p-4 text-gray-500 text-sm">#{user._id}</td>
                                     <td className="p-4 font-medium">{user.name}</td>

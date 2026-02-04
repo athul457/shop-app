@@ -13,8 +13,8 @@ const Wishlist = () => {
 
       <div className="bg-white rounded-lg shadow-sm">
          {wishlistItems.map((item, index) => (
-            <div key={item.id} className={`p-6 flex flex-col md:flex-row items-center gap-6 ${index !== wishlistItems.length - 1 ? 'border-b' : ''}`}>
-               <Link to={`/dashboard/product/${item.id}`} className="shrink-0">
+            <div key={item._id || item.id} className={`p-6 flex flex-col md:flex-row items-center gap-6 ${index !== wishlistItems.length - 1 ? 'border-b' : ''}`}>
+               <Link to={`/dashboard/product/${item._id || item.id}`} className="shrink-0">
                   <img src={item.image_url} alt={item.name} className="w-24 h-24 object-cover rounded-md hover:opacity-80 transition-opacity" />
                </Link>
                
@@ -30,7 +30,7 @@ const Wishlist = () => {
 
                <div className="flex gap-3">
                   <button 
-                    onClick={() => removeFromWishlist(item.id)}
+                    onClick={() => removeFromWishlist(item._id || item.id)}
                     className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 text-gray-700"
                   >
                      <Trash2 size={18} /> Remove

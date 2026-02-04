@@ -63,6 +63,55 @@ const ProductDetails = () => {
     if (id) fetchReviews();
   }, [id]);
 
+  // Check if user has purchased the product
+  const [hasPurchased, setHasPurchased] = useState(false);
+  const [checkingPurchase, setCheckingPurchase] = useState(false);
+
+  useEffect(() => {
+    const checkPurchaseStatus = async () => {
+        if (!user) {
+            setHasPurchased(false);
+            return;
+        }
+
+        try {
+            setCheckingPurchase(true);
+            const token = localStorage.getItem('token');
+            const { data: myOrders } = await axios.get('/api/orders/myorders', {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+
+            // Check if any paid order contains this product
+            const bought = myOrders.some(order => 
+                order.isPaid && 
+                order.orderItems.some(item => (item.product || item._id) === id || item.name === product?.name) // Fallback to name match if IDs vary or product ref is missing
+            );
+            
+            // For robust checking with ID, ensure orderItems structure matches. 
+            // Usually item.product is the ID ref. adjusting check:
+             const boughtById = myOrders.some(order => 
+                order.isPaid && 
+                order.orderItems.some(item => {
+                   // item.product might be an object or string depending on population
+                   const pId = typeof item.product === 'object' ? item.product._id : item.product;
+                   return pId === id;
+                })
+            );
+
+            setHasPurchased(boughtById);
+        } catch (error) {
+            console.error("Failed to check purchase status", error);
+            setHasPurchased(false);
+        } finally {
+            setCheckingPurchase(false);
+        }
+    };
+
+    if (user && id) {
+        checkPurchaseStatus();
+    }
+  }, [user, id]);
+
   const handleSubmitReview = async (e) => {
     e.preventDefault();
     if (!user) {
@@ -226,39 +275,46 @@ const ProductDetails = () => {
                      <h3 className="text-lg font-bold text-gray-900 mb-4">Write a Review</h3>
                      
                      {user ? (
-                        <form onSubmit={handleSubmitReview}>
-                           <div className="mb-4">
-                              <label className="block text-sm font-medium text-gray-700 mb-2">Rating</label>
-                              <div className="flex gap-2">
-                                 {[1, 2, 3, 4, 5].map((star) => (
-                                    <button 
-                                      type="button" 
-                                      key={star}
-                                      onClick={() => setRating(star)}
-                                      className={`p-1 focus:outline-none ${star <= rating ? 'text-yellow-500' : 'text-gray-300'}`}
-                                    >
-                                       <Star size={24} fill="currentColor" />
-                                    </button>
-                                 ))}
-                              </div>
-                           </div>
-                           
-                           <div className="mb-4">
-                              <label className="block text-sm font-medium text-gray-700 mb-2">Comment</label>
-                              <textarea 
-                                 rows="4"
-                                 value={comment}
-                                 onChange={(e) => setComment(e.target.value)}
-                                 className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
-                                 placeholder="Share your thoughts about this product..."
-                                 required
-                              ></textarea>
-                           </div>
+                        hasPurchased ? (
+                            <form onSubmit={handleSubmitReview}>
+                               <div className="mb-4">
+                                  <label className="block text-sm font-medium text-gray-700 mb-2">Rating</label>
+                                  <div className="flex gap-2">
+                                     {[1, 2, 3, 4, 5].map((star) => (
+                                        <button 
+                                          type="button" 
+                                          key={star}
+                                          onClick={() => setRating(star)}
+                                          className={`p-1 focus:outline-none ${star <= rating ? 'text-yellow-500' : 'text-gray-300'}`}
+                                        >
+                                           <Star size={24} fill="currentColor" />
+                                        </button>
+                                     ))}
+                                  </div>
+                               </div>
+                               
+                               <div className="mb-4">
+                                  <label className="block text-sm font-medium text-gray-700 mb-2">Comment</label>
+                                  <textarea 
+                                     rows="4"
+                                     value={comment}
+                                     onChange={(e) => setComment(e.target.value)}
+                                     className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+                                     placeholder="Share your thoughts about this product..."
+                                     required
+                                  ></textarea>
+                               </div>
 
-                           <button type="submit" className="w-full bg-gray-900 text-white py-3 rounded-lg font-bold hover:bg-gray-800 transition-colors">
-                              Submit Review
-                           </button>
-                        </form>
+                               <button type="submit" className="w-full bg-gray-900 text-white py-3 rounded-lg font-bold hover:bg-gray-800 transition-colors">
+                                  Submit Review
+                               </button>
+                            </form>
+                        ) : (
+                            <div className="text-center py-6 bg-yellow-50 rounded-lg border border-dashed border-yellow-200">
+                               <p className="text-yellow-700 font-medium mb-1">Verify Purchase to Review</p>
+                               <p className="text-yellow-600 text-sm">You must purchase this product to leave a review.</p>
+                            </div>
+                        )
                      ) : (
                         <div className="text-center py-6 bg-gray-50 rounded-lg border border-dashed border-gray-300">
                            <p className="text-gray-500 mb-4">Please login to write a review</p>

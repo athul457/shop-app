@@ -114,8 +114,10 @@ const DashboardNavbar = () => {
                     user?.name?.charAt(0).toUpperCase() || 'U'
                   )}
                 </div>
-                {/* For Admin, show name prominently as requested? "login admin name and symbol" */}
-                <span className="hidden md:block font-medium text-sm">{user?.name} {user?.role === 'admin' && '(Admin)'}</span>
+                {/* For Admin, show name prominently as requested. For User, only show profile image. */}
+                {user?.role === 'admin' && (
+                  <span className="hidden md:block font-medium text-sm">{user?.name} (Admin)</span>
+                )}
               </button>
 
               {/* Dropdown Menu */}

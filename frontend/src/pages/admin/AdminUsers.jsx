@@ -1,21 +1,56 @@
-import { useState } from 'react';
-import { Trash2, ShoppingBag } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Trash2, ShoppingBag, Loader } from 'lucide-react';
 import toast from 'react-hot-toast';
+import axios from 'axios';
 
 const AdminUsers = () => {
-    // Mock Data
-    const [users, setUsers] = useState([
-        { _id: '1', name: 'John Doe', email: 'john@example.com', role: 'customer' },
-        { _id: '2', name: 'Admin User', email: 'admin@example.com', role: 'admin' },
-        { _id: '3', name: 'Jane Smith', email: 'jane@example.com', role: 'customer' },
-    ]);
+    const [users, setUsers] = useState([]);
+    const [loading, setLoading] = useState(true);
 
-    const handleDelete = (id) => {
-        if(window.confirm('Are you sure you want to delete this user?')) {
-            setUsers(users.filter(u => u._id !== id));
-            toast.success('User deleted');
+    const fetchUsers = async () => {
+        try {
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`
+                }
+            };
+            const { data } = await axios.get('/api/users', config);
+            setUsers(data);
+        } catch (error) {
+            toast.error(error.response?.data?.message || 'Failed to fetch users');
+        } finally {
+            setLoading(false);
         }
     };
+
+    useEffect(() => {
+        fetchUsers();
+    }, []);
+
+    const handleDelete = async (id) => {
+        if(window.confirm('Are you sure you want to delete this user?')) {
+            try {
+                const config = {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`
+                    }
+                };
+                await axios.delete(`/api/users/${id}`, config);
+                setUsers(users.filter(u => u._id !== id));
+                toast.success('User deleted');
+            } catch (error) {
+                toast.error(error.response?.data?.message || 'Failed to delete user');
+            }
+        }
+    };
+
+    if (loading) {
+        return (
+            <div className="flex justify-center items-center h-64">
+                <Loader className="animate-spin text-blue-600" size={40} />
+            </div>
+        );
+    }
 
     return (
         <div className="p-6">

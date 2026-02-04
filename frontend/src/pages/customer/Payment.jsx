@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useCart } from '../../context/CartContext';
 import { CreditCard, Wallet, Truck, CheckCircle } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import toast from 'react-hot-toast';
+import { createOrder } from '../../api/order.api';
 
 const Payment = () => {
   const { cartItems } = useCart();
@@ -14,14 +15,56 @@ const Payment = () => {
   const tax = subtotal * 0.08;
   const total = subtotal + tax;
 
-  const handlePlaceOrder = () => {
+  // Get address from navigation state
+  const { state } = useLocation();
+  const shippingAddress = state?.address;
+
+  // Redirect if no address selected
+  useEffect(() => {
+    if (!shippingAddress) {
+        toast.error("Please select a shipping address");
+        navigate('/dashboard/checkout');
+    }
+  }, [shippingAddress, navigate]);
+
+  const handlePlaceOrder = async () => {
     setIsProcessing(true);
-    // Simulate API call
-    setTimeout(() => {
-      setIsProcessing(false);
-      toast.success("Order Placed Successfully!");
-      navigate('/dashboard/orders');
-    }, 2000);
+    try {
+        const orderData = {
+            orderItems: cartItems.map(item => ({
+                product: item._id || item.id, // Fallback for safety
+                name: item.name,
+                image: item.image,
+                price: item.price,
+                quantity: item.quantity,
+                vendor: item.vendor || item.vendorId || 'Store'
+            })),
+            shippingAddress: {
+                address: shippingAddress.address,
+                city: shippingAddress.city,
+                pincode: shippingAddress.pincode,
+                phone: shippingAddress.phone,
+                country: 'India'
+            },
+            paymentMethod,
+            itemsPrice: subtotal,
+            taxPrice: tax,
+            shippingPrice: 0,
+            totalPrice: total
+        };
+
+        await createOrder(orderData);
+        toast.success("Order Placed Successfully!");
+        
+        // Clear cart (Optional but recommended, need to export clearCart from context)
+        // clearCart(); 
+        
+        navigate('/dashboard/orders');
+    } catch (error) {
+        toast.error(error.response?.data?.message || "Failed to place order");
+    } finally {
+        setIsProcessing(false);
+    }
   };
 
   return (

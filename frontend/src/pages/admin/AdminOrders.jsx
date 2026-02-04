@@ -1,19 +1,55 @@
-import { useState } from 'react';
-import { Eye, CheckCircle, XCircle } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Eye, CheckCircle, XCircle, Loader, Truck, CheckSquare } from 'lucide-react';
+import { getAllOrders, deliverOrder } from '../../api/order.api';
 import toast from 'react-hot-toast';
+import axios from 'axios';
 
 const AdminOrders = () => {
-    // Mock Data
-    const [orders, setOrders] = useState([
-        { _id: '101', user: 'John Doe', date: '2023-10-25', total: 299.99, isPaid: true, isDelivered: false },
-        { _id: '102', user: 'Jane Smith', date: '2023-10-24', total: 59.99, isPaid: true, isDelivered: true },
-        { _id: '103', user: 'Bob Johnson', date: '2023-10-26', total: 120.50, isPaid: false, isDelivered: false },
-    ]);
+    const [orders, setOrders] = useState([]);
+    const [loading, setLoading] = useState(true);
 
-    const markAsDelivered = (id) => {
-        setOrders(orders.map(o => o._id === id ? { ...o, isDelivered: true } : o));
-        toast.success('Order marked as delivered');
+    useEffect(() => {
+        const fetchOrders = async () => {
+            try {
+                const data = await getAllOrders();
+                setOrders(data);
+            } catch (error) {
+                toast.error("Failed to fetch orders");
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchOrders();
+    }, []);
+
+    const handleAccept = async (id) => {
+        try {
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`
+                }
+            };
+            // Use 'pay' endpoint to simulate acceptance (marking as paid/confirmed)
+            await axios.put(`/api/orders/${id}/pay`, { status: 'COMPLETED' }, config);
+            
+            setOrders(orders.map(o => o._id === id ? { ...o, isPaid: true, paidAt: new Date().toISOString() } : o));
+            toast.success('Order Accepted');
+        } catch (error) {
+            toast.error(error.response?.data?.message || "Acceptance failed");
+        }
     };
+
+    const handleDeliver = async (id) => {
+        try {
+            await deliverOrder(id);
+            setOrders(orders.map(o => o._id === id ? { ...o, isDelivered: true, deliveredAt: new Date().toISOString() } : o));
+            toast.success('Order marked as delivered');
+        } catch (error) {
+            toast.error(error.response?.data?.message || "Update failed");
+        }
+    };
+
+    if (loading) return <div className="p-8 text-center"><Loader className="animate-spin inline-block text-blue-600" /></div>;
 
     return (
         <div className="p-6">
@@ -28,36 +64,49 @@ const AdminOrders = () => {
                                 <th className="p-4 font-semibold text-gray-600">User</th>
                                 <th className="p-4 font-semibold text-gray-600">Date</th>
                                 <th className="p-4 font-semibold text-gray-600">Total</th>
-                                <th className="p-4 font-semibold text-gray-600">Paid</th>
-                                <th className="p-4 font-semibold text-gray-600">Delivered</th>
+                                <th className="p-4 font-semibold text-gray-600">Status</th>
                                 <th className="p-4 font-semibold text-gray-600">Actions</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-100">
                             {orders.map((order) => (
                                 <tr key={order._id} className="hover:bg-gray-50">
-                                    <td className="p-4 font-medium">#{order._id}</td>
-                                    <td className="p-4">{order.user}</td>
-                                    <td className="p-4 text-gray-500">{order.date}</td>
-                                    <td className="p-4 font-bold">${order.total}</td>
+                                    <td className="p-4 font-medium">#{order._id.substring(0, 8).toUpperCase()}</td>
                                     <td className="p-4">
-                                        {order.isPaid ? 
-                                            <span className="flex items-center gap-1 text-green-600 font-medium"><CheckCircle size={14} /> Paid</span> : 
-                                            <span className="flex items-center gap-1 text-red-500 font-medium"><XCircle size={14} /> Pending</span>
-                                        }
+                                        <div className="text-sm">
+                                            <p className="font-bold text-gray-900">{order.user?.name || 'Unknown'}</p>
+                                            <p className="text-gray-500">{order.user?.email}</p>
+                                        </div>
                                     </td>
+                                    <td className="p-4 text-gray-500">{new Date(order.createdAt).toLocaleDateString()}</td>
+                                    <td className="p-4 font-bold">${order.totalPrice.toFixed(2)}</td>
                                     <td className="p-4">
                                         {order.isDelivered ? 
-                                            <span className="flex items-center gap-1 text-green-600 font-medium"><CheckCircle size={14} /> Delivered</span> : 
-                                            <span className="flex items-center gap-1 text-yellow-600 font-medium"><XCircle size={14} /> Pending</span>
+                                            <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-green-100 text-green-700 text-xs font-bold uppercase"><CheckCircle size={12} /> Delivered</span> : 
+                                            order.isPaid ?
+                                            <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-blue-100 text-blue-700 text-xs font-bold uppercase"><CheckCircle size={12} /> Accepted</span> :
+                                            <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-yellow-100 text-yellow-700 text-xs font-bold uppercase"><XCircle size={12} /> Pending</span>
                                         }
                                     </td>
                                     <td className="p-4 flex gap-2">
-                                        <button className="p-2 text-gray-600 hover:bg-gray-100 rounded" title="View Details"><Eye size={16} /></button>
-                                        {!order.isDelivered && (
-                                            <button onClick={() => markAsDelivered(order._id)} className="p-2 text-blue-600 hover:bg-blue-50 rounded" title="Mark as Delivered">
-                                                <CheckCircle size={16} />
+                                        {!order.isPaid && (
+                                            <button 
+                                                onClick={() => handleAccept(order._id)} 
+                                                className="px-3 py-1 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition"
+                                            >
+                                                Accept
                                             </button>
+                                        )}
+                                        {order.isPaid && !order.isDelivered && (
+                                            <button 
+                                                onClick={() => handleDeliver(order._id)} 
+                                                className="px-3 py-1 bg-green-600 text-white rounded-lg text-sm font-medium hover:bg-green-700 transition flex items-center gap-1"
+                                            >
+                                                <Truck size={14} /> Deliver
+                                            </button>
+                                        )}
+                                        {order.isDelivered && (
+                                            <span className="text-gray-400 text-sm font-medium flex items-center gap-1"><CheckCircle size={14} /> Done</span>
                                         )}
                                     </td>
                                 </tr>

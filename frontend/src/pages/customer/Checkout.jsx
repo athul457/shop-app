@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useCart } from '../../context/CartContext';
 import { useAddress } from '../../context/AddressContext';
 import { useNavigate } from 'react-router-dom';
 import { MapPin, Phone, Mail, User, Home, ArrowRight, Plus, CheckCircle } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 const Checkout = () => {
   const { cartItems } = useCart();
@@ -10,8 +11,16 @@ const Checkout = () => {
   const navigate = useNavigate();
 
   // Mode: 'saved' or 'new'
-  const [mode, setMode] = useState(addresses.length > 0 ? 'saved' : 'new');
-  const [selectedAddressId, setSelectedAddressId] = useState(addresses.length > 0 ? addresses[0].id : null);
+  const [mode, setMode] = useState('new'); // Default to new, update effect will switch if saved exists
+  const [selectedAddressId, setSelectedAddressId] = useState(null);
+
+  // Update selection when addresses load
+  useEffect(() => {
+    if (addresses.length > 0 && !selectedAddressId) {
+        setMode('saved');
+        setSelectedAddressId(addresses[0].id);
+    }
+  }, [addresses]);
 
   // Form State
   const [formData, setFormData] = useState({
@@ -36,21 +45,22 @@ const Checkout = () => {
     if (mode === 'new') {
         // Validate new address
         if (!formData.name || !formData.phone || !formData.address || !formData.city || !formData.pincode) {
-            alert("Please fill all required fields");
+            toast.error("Please fill all required fields");
             return;
         }
         const success = await addNewAddress(formData);
         if(success) {
-            navigate('/dashboard/payment'); 
+            navigate('/dashboard/payment', { state: { address: formData } }); 
         }
     } else {
         // Validate selected address
         if (!selectedAddressId) {
-            alert("Please select an address");
+            toast.error("Please select an address");
             return;
         }
         // Proceed to Payment with existing address
-        navigate('/dashboard/payment'); 
+        const selectedAddr = addresses.find(a => a.id === selectedAddressId);
+        navigate('/dashboard/payment', { state: { address: selectedAddr } }); 
     }
   };
 

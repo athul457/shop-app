@@ -7,16 +7,8 @@ export const useCart = () => useContext(CartContext);
 
 export const CartProvider = ({ children }) => {
   // Initialize with Dummy Data for Demo
-  const [cartItems, setCartItems] = useState([
-    {
-      id: 1,
-      name: "Wireless Noise Cancelling Headphones",
-      price: 299.99,
-      image: "https://images.pexels.com/photos/1649771/pexels-photo-1649771.jpeg?auto=compress&cs=tinysrgb&w=600",
-      quantity: 1,
-      vendor: "AudioTech"
-    }
-  ]);
+  // Initialize cart with empty array
+  const [cartItems, setCartItems] = useState([]);
 
   const addToCart = (product) => {
     setCartItems(prev => {

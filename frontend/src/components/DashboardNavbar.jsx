@@ -66,13 +66,11 @@ const DashboardNavbar = () => {
 
           {/* Right Actions */}
           <div className="flex items-center gap-4">
-            {/* Cart - Hide for Admin */}
-            {user && user.role !== 'admin' && (
-              <Link to="/dashboard/cart" className="p-2 text-gray-500 hover:text-blue-600 transition-colors relative">
-                <ShoppingCart className="h-6 w-6" />
-                {cartCount > 0 && <span className="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform translate-x-1/4 -translate-y-1/4 bg-red-600 rounded-full">{cartCount}</span>}
-              </Link>
-            )}
+             {/* Cart */}
+             <Link to="/dashboard/cart" className="p-2 text-gray-500 hover:text-blue-600 transition-colors relative">
+               <ShoppingCart className="h-6 w-6" />
+               {cartCount > 0 && <span className="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform translate-x-1/4 -translate-y-1/4 bg-red-600 rounded-full">{cartCount}</span>}
+             </Link>
 
             {/* Account Dropdown */}
             <div className="relative" ref={dropdownRef}>

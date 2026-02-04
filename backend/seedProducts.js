@@ -12,7 +12,7 @@ const products = [
     "price": 549.99,
     "category": "Home Appliances",
     "stock": 12,
-    // "image": "https://images.pexels.com/photos/5591596/pexels-photo-5591596.jpeg",
+    "image": "https://images.pexels.com/photos/5591596/pexels-photo-5591596.jpeg?auto=compress&cs=tinysrgb&w=600",
     "vendorId": "vendor_001",
     "isApproved": true,
     "rating": 4.6
@@ -23,7 +23,7 @@ const products = [
     "price": 699.99,
     "category": "Home Appliances",
     "stock": 10,
-    //  "image": "https://images.pexels.com/photos/5824876/pexels-photo-5824876.jpeg",
+     "image": "https://images.pexels.com/photos/5824876/pexels-photo-5824876.jpeg?auto=compress&cs=tinysrgb&w=600",
     "vendorId": "vendor_002",
     "isApproved": true,
     "rating": 4.7
@@ -34,7 +34,7 @@ const products = [
     "price": 199.99,
     "category": "Home Appliances",
     "stock": 18,
-    // "image": "https://images.pexels.com/photos/4108807/pexels-photo-4108807.jpeg",
+    "image": "https://images.pexels.com/photos/4108807/pexels-photo-4108807.jpeg?auto=compress&cs=tinysrgb&w=600",
     "vendorId": "vendor_003",
     "isApproved": true,
     "rating": 4.4
@@ -45,7 +45,7 @@ const products = [
     "price": 89.99,
     "category": "Home Appliances",
     "stock": 30,
-    // "image": "https://images.pexels.com/photos/4226806/pexels-photo-4226806.jpeg",
+    "image": "https://images.pexels.com/photos/4226806/pexels-photo-4226806.jpeg?auto=compress&cs=tinysrgb&w=600",
     "vendorId": "vendor_001",
     "isApproved": true,
     "rating": 4.5
@@ -56,7 +56,7 @@ const products = [
     "price": 74.99,
     "category": "Home Appliances",
     "stock": 25,
-    // "image": "https://images.pexels.com/photos/5824505/pexels-photo-5824505.jpeg",
+    "image": "https://images.pexels.com/photos/5824505/pexels-photo-5824505.jpeg?auto=compress&cs=tinysrgb&w=600",
     "vendorId": "vendor_004",
     "isApproved": true,
     "rating": 4.3
@@ -67,7 +67,7 @@ const products = [
     "price": 129.99,
     "category": "Home Appliances",
     "stock": 20,
-    // "image": "https://images.pexels.com/photos/4107274/pexels-photo-4107274.jpeg",
+    "image": "https://images.pexels.com/photos/4107274/pexels-photo-4107274.jpeg?auto=compress&cs=tinysrgb&w=600",
     "vendorId": "vendor_002",
     "isApproved": true,
     "rating": 4.4
@@ -78,7 +78,7 @@ const products = [
     "price": 149.99,
     "category": "Home Appliances",
     "stock": 15,
-    // "image": "https://images.pexels.com/photos/5946080/pexels-photo-5946080.jpeg",
+    "image": "https://images.pexels.com/photos/5946080/pexels-photo-5946080.jpeg?auto=compress&cs=tinysrgb&w=600",
     "vendorId": "vendor_003",
     "isApproved": true,
     "rating": 4.6
@@ -89,7 +89,7 @@ const products = [
     "price": 39.99,
     "category": "Home Appliances",
     "stock": 40,
-    // "image": "https://images.pexels.com/photos/302899/pexels-photo-302899.jpeg",
+    "image": "https://images.pexels.com/photos/302899/pexels-photo-302899.jpeg?auto=compress&cs=tinysrgb&w=600",
     "vendorId": "vendor_001",
     "isApproved": true,
     "rating": 4.2
@@ -100,7 +100,7 @@ const products = [
     "price": 59.99,
     "category": "Home Appliances",
     "stock": 22,
-    // "image": "https://images.pexels.com/photos/4108717/pexels-photo-4108717.jpeg",
+    "image": "https://images.pexels.com/photos/4108717/pexels-photo-4108717.jpeg?auto=compress&cs=tinysrgb&w=600",
     "vendorId": "vendor_004",
     "isApproved": true,
     "rating": 4.3
@@ -111,7 +111,7 @@ const products = [
     "price": 79.99,
     "category": "Home Appliances",
     "stock": 35,
-    // "image": "https://images.pexels.com/photos/276024/pexels-photo-276024.jpeg",
+    "image": "https://images.pexels.com/photos/276024/pexels-photo-276024.jpeg?auto=compress&cs=tinysrgb&w=600",
     "vendorId": "vendor_002",
     "isApproved": true,
     "rating": 4.5
@@ -122,7 +122,7 @@ const products = [
     "price": 34.99,
     "category": "Fashion",
     "stock": 60,
-    // "image": "https://images.pexels.com/photos/297933/pexels-photo-297933.jpeg",
+    "image": "https://images.pexels.com/photos/297933/pexels-photo-297933.jpeg?auto=compress&cs=tinysrgb&w=600",
     "vendorId": "vendor_001",
     "isApproved": true,
     "rating": 4.4
@@ -133,7 +133,7 @@ const products = [
     "price": 49.99,
     "category": "Fashion",
     "stock": 45,
-    // "image": "https://images.pexels.com/photos/1488463/pexels-photo-1488463.jpeg",
+    "image": "https://images.pexels.com/photos/1488463/pexels-photo-1488463.jpeg?auto=compress&cs=tinysrgb&w=600",
     "vendorId": "vendor_002",
     "isApproved": true,
     "rating": 4.6
@@ -144,7 +144,7 @@ const products = [
     "price": 54.99,
     "category": "Fashion",
     "stock": 50,
-    //  "image": "https://images.pexels.com/photos/1598507/pexels-photo-1598507.jpeg",
+     "image": "https://images.pexels.com/photos/1598507/pexels-photo-1598507.jpeg?auto=compress&cs=tinysrgb&w=600",
     "vendorId": "vendor_003",
     "isApproved": true,
     "rating": 4.5
@@ -155,7 +155,7 @@ const products = [
     "price": 19.99,
     "category": "Fashion",
     "stock": 100,
-    // "image": "https://images.pexels.com/photos/1002640/pexels-photo-1002640.jpeg",
+    "image": "https://images.pexels.com/photos/1002640/pexels-photo-1002640.jpeg?auto=compress&cs=tinysrgb&w=600",
     "vendorId": "vendor_004",
     "isApproved": true,
     "rating": 4.3
@@ -166,7 +166,7 @@ const products = [
     "price": 44.99,
     "category": "Fashion",
     "stock": 40,
-    // "image": "https://images.pexels.com/photos/428340/pexels-photo-428340.jpeg",
+    "image": "https://images.pexels.com/photos/428340/pexels-photo-428340.jpeg?auto=compress&cs=tinysrgb&w=600",
     "vendorId": "vendor_001",
     "isApproved": true,
     "rating": 4.4
@@ -177,7 +177,7 @@ const products = [
     "price": 69.99,
     "category": "Fashion",
     "stock": 35,
-    // "image": "https://images.pexels.com/photos/994523/pexels-photo-994523.jpeg",
+    "image": "https://images.pexels.com/photos/994523/pexels-photo-994523.jpeg?auto=compress&cs=tinysrgb&w=600",
     "vendorId": "vendor_002",
     "isApproved": true,
     "rating": 4.6
@@ -188,7 +188,7 @@ const products = [
     "price": 39.99,
     "category": "Fashion",
     "stock": 55,
-    // "image": "https://images.pexels.com/photos/3760610/pexels-photo-3760610.jpeg",
+    "image": "https://images.pexels.com/photos/3760610/pexels-photo-3760610.jpeg?auto=compress&cs=tinysrgb&w=600",
     "vendorId": "vendor_003",
     "isApproved": true,
     "rating": 4.5
@@ -199,7 +199,7 @@ const products = [
     "price": 24.99,
     "category": "Fashion",
     "stock": 80,
-    // "image": "https://images.pexels.com/photos/6311669/pexels-photo-6311669.jpeg",
+    "image": "https://images.pexels.com/photos/6311669/pexels-photo-6311669.jpeg?auto=compress&cs=tinysrgb&w=600",
     "vendorId": "vendor_004",
     "isApproved": true,
     "rating": 4.4
@@ -210,7 +210,7 @@ const products = [
     "price": 22.99,
     "category": "Fashion",
     "stock": 70,
-    // "image": "https://images.pexels.com/photos/322207/pexels-photo-322207.jpeg",
+    "image": "https://images.pexels.com/photos/322207/pexels-photo-322207.jpeg?auto=compress&cs=tinysrgb&w=600",
     "vendorId": "vendor_001",
     "isApproved": true,
     "rating": 4.3
@@ -221,7 +221,7 @@ const products = [
     "price": 59.99,
     "category": "Fashion",
     "stock": 45,
-    // "image": "https://images.pexels.com/photos/2529148/pexels-photo-2529148.jpeg",
+    "image": "https://images.pexels.com/photos/2529148/pexels-photo-2529148.jpeg?auto=compress&cs=tinysrgb&w=600",
     "vendorId": "vendor_002",
     "isApproved": true,
     "rating": 4.6

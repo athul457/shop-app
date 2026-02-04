@@ -1,4 +1,4 @@
-const data = [
+const products = [
   {
     "id": 1,
     "name": "Automatic Washing Machine",
@@ -786,4 +786,4 @@ const data = [
 
 
 
-export default data;
+export default products;

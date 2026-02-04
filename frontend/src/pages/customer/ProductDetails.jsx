@@ -225,9 +225,9 @@ const ProductDetails = () => {
                 >
                    <ShoppingCart size={20} /> Add to Cart
                 </button>
-                <button className="bg-gray-100 text-gray-600 p-4 rounded-xl hover:bg-gray-200 transition-colors">
+                {/* <button className="bg-gray-100 text-gray-600 p-4 rounded-xl hover:bg-gray-200 transition-colors">
                    <Heart size={24} />
-                </button>
+                </button> */}
              </div>
           </div>
         </div>

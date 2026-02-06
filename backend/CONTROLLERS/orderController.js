@@ -183,7 +183,29 @@ const updateReturnExchangeStatus = asyncHandler(async (req, res) => {
       throw new Error('Item not found');
     }
 
+    // Security Check: Users can ONLY set 'return_acknowledged'
+    if (req.user.role === 'user' && status !== 'return_acknowledged') {
+        res.status(403);
+        throw new Error('Not authorized to set this status');
+    }
+
     item.returnExchange.status = status;
+
+    // Auto-calculate refund when item is marked as returned
+    if (status === 'returned') {
+        item.returnExchange.refundAmount = item.price * item.quantity;
+        item.returnExchange.refundedAt = Date.now();
+
+        // Check if ALL items in the order are returned
+        const allReturned = order.orderItems.every(i => 
+            (i._id.toString() === itemId && status === 'returned') || // Current item being updated
+            i.returnExchange.status === 'returned'
+        );
+
+        if (allReturned) {
+            order.orderStatus = 'Returned';
+        }
+    }
     
     await order.save();
     res.json(order);
@@ -191,6 +213,81 @@ const updateReturnExchangeStatus = asyncHandler(async (req, res) => {
     res.status(404);
     throw new Error('Order not found');
   }
+});
+
+// @desc    Update Order Status (Admin/Vendor pipeline)
+// @route   PUT /api/orders/:id/status
+// @access  Private/Admin/Vendor
+const updateOrderStatus = asyncHandler(async (req, res) => {
+    const { status } = req.body;
+    const order = await Order.findById(req.params.id);
+
+    if (order) {
+        order.orderStatus = status;
+        
+        // Sync legacy booleans for backward compatibility
+        if (status === 'Delivered') {
+            order.isDelivered = true;
+            order.deliveredAt = Date.now();
+        }
+        if (status === 'Processing') {
+            order.isPaid = true; // Assuming Admin Accept = Paid/Confirmed
+            order.paidAt = Date.now();
+        }
+
+        const updatedOrder = await order.save();
+        res.json(updatedOrder);
+    } else {
+        res.status(404);
+        throw new Error('Order not found');
+    }
+});
+
+// @desc    Handle Cancellation (User Requests & Admin Decision)
+// @route   PUT /api/orders/:id/cancel
+// @access  Private
+const handleCancelRequest = asyncHandler(async (req, res) => {
+    const { action, reason, description } = req.body; 
+    // action: 'request' (User), 'approve' (Admin), 'reject' (Admin)
+    
+    const order = await Order.findById(req.params.id);
+
+    if (!order) {
+        res.status(404);
+        throw new Error('Order not found');
+    }
+
+    if (action === 'request') {
+        // User requesting cancel
+        if (order.user.toString() !== req.user._id.toString()) {
+            res.status(401); 
+            throw new Error('Not authorized');
+        }
+        if (['Shipped', 'Out of Delivery', 'Delivered'].includes(order.orderStatus)) {
+            res.status(400); 
+            throw new Error('Cannot cancel shipped orders');
+        }
+
+        order.cancelDetails = {
+            reason,
+            description,
+            requestedAt: Date.now(),
+            isVerified: false
+        };
+        // Status doesn't change yet, waits for Admin
+    } 
+    else if (action === 'approve') {
+        // Admin approving cancel
+        order.orderStatus = 'Cancelled';
+        order.cancelDetails.isVerified = true;
+    } 
+    else if (action === 'reject') {
+        // Admin rejecting cancel - Clear request
+        order.cancelDetails = undefined;
+    }
+
+    const updatedOrder = await order.save();
+    res.json(updatedOrder);
 });
 
 module.exports = {
@@ -201,5 +298,7 @@ module.exports = {
   getMyOrders,
   getOrders,
   requestReturnExchange,
-  updateReturnExchangeStatus
+  updateReturnExchangeStatus,
+  updateOrderStatus,
+  handleCancelRequest
 };

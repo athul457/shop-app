@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useCart } from '../../context/CartContext';
 import { useAddress } from '../../context/AddressContext';
+import useAuth from '../../hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
 import { MapPin, Phone, Mail, User, Home, ArrowRight, Plus, CheckCircle2, ShieldCheck, Briefcase, Tag } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -8,6 +9,7 @@ import toast from 'react-hot-toast';
 const Checkout = () => {
   const { cartItems } = useCart();
   const { addresses, addNewAddress } = useAddress();
+  const { user } = useAuth();
   const navigate = useNavigate();
 
   // Mode: 'saved' or 'new'
@@ -60,7 +62,13 @@ const Checkout = () => {
         }
         // Proceed to Payment with existing address
         const selectedAddr = addresses.find(a => a.id === selectedAddressId);
-        navigate('/dashboard/payment', { state: { address: selectedAddr } }); 
+        navigate('/dashboard/payment', { 
+            state: { 
+                address: selectedAddr,
+                discount: discount,
+                appliedCoupon: appliedCoupon
+            } 
+        }); 
     }
   };
 
@@ -83,6 +91,12 @@ const Checkout = () => {
     // Check Expiry
     if (new Date(coupon.validUntil) < new Date().setHours(0,0,0,0)) {
         toast.error("This coupon has expired");
+        return;
+    }
+
+    // Check if already used by this user
+    if (coupon.usedBy && user && coupon.usedBy.includes(user._id || user.id)) {
+        toast.error("You have already used this coupon");
         return;
     }
 

@@ -21,11 +21,24 @@ const orderSchema = mongoose.Schema({
       returnExchange: {
         type: { type: String, enum: ['cancel', 'return', 'exchange', 'none'], default: 'none' },
         reason: { type: String },
-        status: { type: String, enum: ['pending', 'approved', 'rejected', 'none'], default: 'none' },
-        requestedAt: { type: Date }
+        status: { type: String, enum: ['pending', 'approved', 'rejected', 'return_initiated', 'return_acknowledged', 'returned', 'none'], default: 'none' },
+        requestedAt: { type: Date },
+        refundAmount: { type: Number },
+        refundedAt: { type: Date }
       }
     },
   ],
+  orderStatus: {
+    type: String,
+    enum: ['Placed', 'Processing', 'Packed', 'Shipped', 'Out for Delivery', 'Delivered', 'Cancelled', 'Returned'],
+    default: 'Placed'
+  },
+  cancelDetails: {
+      reason: { type: String },
+      description: { type: String },
+      requestedAt: { type: Date },
+      isVerified: { type: Boolean, default: false } // Admin verification status
+  },
   shippingAddress: {
     address: { type: String, required: true },
     city: { type: String, required: true },

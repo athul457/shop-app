@@ -29,13 +29,34 @@ const AdminOrders = () => {
                     Authorization: `Bearer ${localStorage.getItem('token')}`
                 }
             };
-            // Use 'pay' endpoint to simulate acceptance (marking as paid/confirmed)
-            await axios.put(`/api/orders/${id}/pay`, { status: 'COMPLETED' }, config);
+            // Move to Processing
+            await axios.put(`/api/orders/${id}/status`, { status: 'Processing' }, config);
             
-            setOrders(orders.map(o => o._id === id ? { ...o, isPaid: true, paidAt: new Date().toISOString() } : o));
-            toast.success('Order Accepted');
+            setOrders(orders.map(o => o._id === id ? { ...o, orderStatus: 'Processing', isPaid: true } : o));
+            toast.success('Order Accepted & Forwarded to Vendor');
         } catch (error) {
             toast.error(error.response?.data?.message || "Acceptance failed");
+        }
+    };
+
+    const handleCancelDecision = async (id, action) => {
+        try {
+            const config = {
+                 headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+            };
+            await axios.put(`/api/orders/${id}/cancel`, { action }, config);
+
+            // Optimistic update
+            setOrders(orders.map(o => {
+                if (o._id === id) {
+                    if (action === 'approve') return { ...o, orderStatus: 'Cancelled' };
+                    if (action === 'reject') return { ...o, cancelDetails: undefined }; // specific to controller logic
+                }
+                return o;
+            }));
+            toast.success(`Cancellation request ${action}ed`);
+        } catch (error) {
+            toast.error("Action failed");
         }
     };
 
@@ -172,11 +193,15 @@ const AdminOrders = () => {
                                              <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-orange-100 text-orange-700 text-xs font-bold uppercase animate-pulse">
                                                 <CheckCircle size={12} /> Action Needed
                                              </span>
-                                        ) : order.isDelivered ? 
+                                        ) : order.orderStatus === 'Cancelled' ? 
+                                            <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-red-100 text-red-700 text-xs font-bold uppercase"><XCircle size={12} /> Cancelled</span> :
+                                            order.orderStatus === 'Delivered' ? 
                                             <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-green-100 text-green-700 text-xs font-bold uppercase"><CheckCircle size={12} /> Delivered</span> : 
-                                            order.isPaid ?
-                                            <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-blue-100 text-blue-700 text-xs font-bold uppercase"><CheckCircle size={12} /> Accepted</span> :
-                                            <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-yellow-100 text-yellow-700 text-xs font-bold uppercase"><XCircle size={12} /> Pending</span>
+                                            order.orderStatus === 'Processing' ?
+                                            <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-blue-100 text-blue-700 text-xs font-bold uppercase"><Loader size={12} /> Processing</span> :
+                                            order.orderStatus === 'Shipped' ?
+                                            <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-indigo-100 text-indigo-700 text-xs font-bold uppercase"><Truck size={12} /> Shipped</span> :
+                                            <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-yellow-100 text-yellow-700 text-xs font-bold uppercase"><CheckSquare size={12} /> New Order</span>
                                         }
                                     </td>
                                     <td className="p-4 flex gap-2">
@@ -198,8 +223,20 @@ const AdminOrders = () => {
                                             </button>
                                         )}
 
-                                        {order.isDelivered && !hasPendingRequests && (
-                                            <span className="text-gray-400 text-sm font-medium flex items-center gap-1"><CheckCircle size={14} /> Done</span>
+                                        {order.cancelDetails && !order.cancelDetails.isVerified && order.orderStatus !== 'Cancelled' && (
+                                            <div className="flex gap-1">
+                                                <button onClick={() => handleCancelDecision(order._id, 'approve')} className="px-2 py-1 bg-red-600 text-white rounded text-xs">Approve Cancel</button>
+                                                <button onClick={() => handleCancelDecision(order._id, 'reject')} className="px-2 py-1 bg-gray-500 text-white rounded text-xs">Reject</button>
+                                            </div>
+                                        )}
+                                        {/* Accept Button only for Placed Orders */}
+                                        {(order.orderStatus === 'Placed' || (!order.orderStatus && !order.isPaid)) && !hasPendingRequests && (
+                                            <button 
+                                                onClick={() => handleAccept(order._id)} 
+                                                className="px-3 py-1 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition"
+                                            >
+                                                Accept
+                                            </button>
                                         )}
                                     </td>
                                 </tr>
@@ -234,17 +271,42 @@ const AdminOrders = () => {
                                                 </span>
                                                 <span className={`text-xs font-bold uppercase px-2 py-0.5 rounded ${
                                                     item.returnExchange.status === 'pending' ? 'bg-yellow-100 text-yellow-700' :
-                                                    item.returnExchange.status === 'approved' ? 'bg-green-100 text-green-700' :
+                                                    item.returnExchange.status === 'approved' ? 'bg-blue-100 text-blue-700' :
+                                                    item.returnExchange.status === 'return_initiated' ? 'bg-orange-100 text-orange-700' :
+                                                    item.returnExchange.status === 'return_acknowledged' ? 'bg-purple-100 text-purple-700' :
+                                                    item.returnExchange.status === 'returned' ? 'bg-green-100 text-green-700' :
                                                     'bg-red-100 text-red-700'
                                                 }`}>
-                                                    {item.returnExchange.status}
+                                                    {
+                                                        item.returnExchange.status === 'returned' ? 'Product Returned' :
+                                                        item.returnExchange.status === 'return_acknowledged' ? 'Return Picked Up' :
+                                                        item.returnExchange.status.replace('_', ' ')
+                                                    }
                                                 </span>
                                             </div>
                                         </div>
                                     </div>
                                     
-                                    <div className="bg-white p-3 rounded border border-gray-200 mb-4 text-sm">
-                                        <span className="font-semibold text-gray-700">Reason:</span> {item.returnExchange.reason}
+                                    <div className="bg-white p-3 rounded border border-gray-200 mb-4 text-sm space-y-2">
+                                        <div>
+                                            <span className="font-semibold text-gray-700 block text-xs uppercase text-gray-400">Reason</span>
+                                            {item.returnExchange.reason.split('|')[0].trim()}
+                                        </div>
+                                        {item.returnExchange.reason.includes('|') && (
+                                            <div className="pt-2 border-t border-gray-100">
+                                                <span className="font-semibold text-gray-700 block text-xs uppercase text-gray-400">Customer Comments</span>
+                                                <p className="text-gray-600 italic">"{item.returnExchange.reason.split('|')[1].trim()}"</p>
+                                            </div>
+                                        )}
+                                        {item.returnExchange.refundAmount && (
+                                            <div className="pt-2 border-t border-gray-100 flex justify-between items-center">
+                                                <div>
+                                                    <span className="font-semibold text-gray-700 block text-xs uppercase text-gray-400">Refund Issued</span>
+                                                    <span className="text-xs text-gray-400">{new Date(item.returnExchange.refundedAt).toLocaleDateString()}</span>
+                                                </div>
+                                                <span className="font-bold text-green-600 text-lg">${item.returnExchange.refundAmount.toFixed(2)}</span>
+                                            </div>
+                                        )}
                                     </div>
 
                                     {item.returnExchange.status === 'pending' && (

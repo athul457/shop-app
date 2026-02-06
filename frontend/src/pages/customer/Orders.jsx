@@ -37,10 +37,12 @@ const Orders = () => {
   });
   const [returnType, setReturnType] = useState('return');
   const [returnReason, setReturnReason] = useState('');
+  const [returnComments, setReturnComments] = useState(''); // Correct location
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleReturnRequest = async (e) => {
       e.preventDefault();
+      if (isSubmitting) return;
       setIsSubmitting(true);
       
       try {
@@ -54,7 +56,7 @@ const Orders = () => {
              body: JSON.stringify({
                  itemId: returnModal.itemId,
                  type: returnType,
-                 reason: returnReason
+                 reason: returnComments ? `${returnReason} | ${returnComments}` : returnReason
              })
           });
 
@@ -82,7 +84,69 @@ const Orders = () => {
       }
   };
 
+  /* CANCEL MODAL STATE */
+  const [cancelModal, setCancelModal] = useState({ isOpen: false, orderId: null });
+  const [cancelReason, setCancelReason] = useState('');
+  const [cancelDescription, setCancelDescription] = useState('');
+
+
+
+  const handleCancelSubmit = async (e) => {
+      e.preventDefault();
+      if (isSubmitting) return;
+      setIsSubmitting(true);
+      try {
+          const config = { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } };
+          await fetch(`/api/orders/${cancelModal.orderId}/cancel`, {
+              method: 'PUT',
+              headers: { 
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${localStorage.getItem('token')}`
+              },
+              body: JSON.stringify({ action: 'request', reason: cancelReason, description: cancelDescription })
+          });
+          
+          toast.success("Cancellation requested");
+          setCancelModal({ isOpen: false, orderId: null });
+          window.location.reload(); // Refresh to see status change
+      } catch (error) {
+          toast.error("Failed to request cancellation");
+      } finally {
+          setIsSubmitting(false);
+      }
+  };
+
+  const confirmHandover = async (orderId, itemId) => {
+      try {
+          const config = { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } };
+          await fetch(`/api/orders/${orderId}/return-status`, {
+              method: 'PUT',
+              headers: { 
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${localStorage.getItem('token')}`
+              },
+              body: JSON.stringify({ itemId, status: 'return_acknowledged' })
+          });
+          
+          toast.success("Return Pickup Confirmed");
+          // Refresh orders
+          const data = await getMyOrders();
+          setOrders(data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)));
+          
+          if (selectedOrder) {
+              const updated = data.find(o => o._id === selectedOrder._id);
+              if (updated) setSelectedOrder(updated);
+          }
+      } catch (error) {
+          toast.error("Confirmation failed");
+      }
+  };
+
   const openReturnModal = (orderId, item) => {
+      if (item.returnExchange?.status && item.returnExchange.status !== 'none') {
+          toast.error("Request already active for this item");
+          return;
+      }
       setReturnModal({
           isOpen: true,
           orderId,
@@ -102,16 +166,27 @@ const Orders = () => {
   }
 
   // STATUS HELPERS
-  const getStatusColor = (isDelivered, isPaid) => {
-      if (isDelivered) return 'bg-green-100 text-green-700 border-green-200';
-      if (isPaid) return 'bg-blue-50 text-blue-700 border-blue-200';
-      return 'bg-amber-50 text-amber-700 border-amber-200';
+  const getStatusColor = (status) => {
+      switch (status) {
+          case 'Delivered': return 'bg-green-100 text-green-700 border-green-200';
+          case 'Shipped': return 'bg-purple-50 text-purple-700 border-purple-200';
+          case 'Processing': return 'bg-blue-50 text-blue-700 border-blue-200';
+          case 'Cancelled': return 'bg-red-50 text-red-700 border-red-200';
+          case 'Out for Delivery': return 'bg-orange-50 text-orange-700 border-orange-200';
+          case 'Returned': return 'bg-gray-100 text-gray-700 border-gray-200';
+          default: return 'bg-amber-50 text-amber-700 border-amber-200';
+      }
   };
 
-  const getStatusIcon = (isDelivered, isPaid) => {
-      if (isDelivered) return <CheckCircle2 size={16} />;
-      if (isPaid) return <Truck size={16} />;
-      return <Clock size={16} />;
+  const getStatusIcon = (status) => {
+      switch (status) {
+          case 'Delivered': return <CheckCircle2 size={16} />;
+          case 'Shipped': return <Truck size={16} />;
+          case 'Processing': return <Loader size={16} />;
+          case 'Cancelled': return <AlertCircle size={16} />;
+          case 'Returned': return <CheckCircle2 size={16} />;
+          default: return <Clock size={16} />;
+      }
   };
 
   return (
@@ -153,9 +228,9 @@ const Orders = () => {
                     </div>
                 </div>
 
-                <div className={`px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wide border flex items-center gap-2 ${getStatusColor(order.isDelivered, order.isPaid)}`}>
-                    {getStatusIcon(order.isDelivered, order.isPaid)}
-                    {order.isDelivered ? 'Delivered' : order.isPaid ? 'Processing' : 'Pending Payment'}
+                <div className={`px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wide border flex items-center gap-2 ${getStatusColor(order.orderStatus || 'Placed')}`}>
+                    {getStatusIcon(order.orderStatus || 'Placed')}
+                    {order.orderStatus || 'Placed'}
                 </div>
              </div>
 
@@ -217,8 +292,8 @@ const Orders = () => {
                     <div>
                         <div className="flex items-center gap-3 mb-1">
                             <h2 className="text-2xl font-bold text-gray-900">Order Details</h2>
-                            <span className={`px-2.5 py-0.5 rounded-full text-xs font-bold uppercase border ${getStatusColor(selectedOrder.isDelivered, selectedOrder.isPaid)}`}>
-                                {selectedOrder.isDelivered ? 'Delivered' : selectedOrder.isPaid ? 'Processing' : 'Pending'}
+                            <span className={`px-2.5 py-0.5 rounded-full text-xs font-bold uppercase border ${getStatusColor(selectedOrder.orderStatus || 'Placed')}`}>
+                                {selectedOrder.orderStatus || 'Placed'}
                             </span>
                         </div>
                         <p className="text-sm text-gray-500 font-mono">ID: #{selectedOrder._id}</p>
@@ -345,17 +420,24 @@ const Orders = () => {
                                         <span className="font-bold text-xl text-gray-900">${(item.price * item.quantity).toFixed(2)}</span>
                                         
                                         {/* Return/Exchange Action */}
-                                        {selectedOrder.isDelivered && (
+                                        {(selectedOrder.isDelivered || selectedOrder.orderStatus === 'Returned') && (
                                            <div>
                                               {item.returnExchange?.status && item.returnExchange.status !== 'none' ? (
                                                   <span className={`px-3 py-1.5 text-xs font-bold uppercase rounded-lg border inline-flex items-center gap-1 ${
-                                                     item.returnExchange.status === 'approved' ? 'bg-green-50 text-green-700 border-green-200' :
+                                                     item.returnExchange.status === 'approved' ? 'bg-blue-50 text-blue-700 border-blue-200' :
+                                                     item.returnExchange.status === 'return_initiated' ? 'bg-yellow-50 text-yellow-700 border-yellow-200' :
+                                                     item.returnExchange.status === 'return_acknowledged' ? 'bg-purple-50 text-purple-700 border-purple-200' :
+                                                     item.returnExchange.status === 'returned' ? 'bg-green-50 text-green-700 border-green-200' :
                                                      item.returnExchange.status === 'rejected' ? 'bg-red-50 text-red-700 border-red-200' :
                                                      'bg-orange-50 text-orange-700 border-orange-200'
                                                   }`}>
-                                                      {item.returnExchange.status === 'approved' && <CheckCircle2 size={12}/>}
+                                                      {item.returnExchange.status === 'returned' && <CheckCircle2 size={12}/>}
                                                       {item.returnExchange.status === 'rejected' && <AlertCircle size={12}/>}
-                                                      {item.returnExchange.type}: {item.returnExchange.status}
+                                                      {
+                                                          item.returnExchange.status === 'returned' ? 'Product Returned' :
+                                                          item.returnExchange.status === 'return_acknowledged' ? 'Return Picked Up' :
+                                                          item.returnExchange.status.replace('_', ' ')
+                                                      }
                                                   </span>
                                               ) : (
                                                   <button 
@@ -365,8 +447,25 @@ const Orders = () => {
                                                      Request Return
                                                   </button>
                                               )}
-                                           </div>
-                                        )}
+                                            {/* Action Buttons & Details */}
+                                            {item.returnExchange?.status === 'return_initiated' && (
+                                                <button 
+                                                    onClick={() => confirmHandover(selectedOrder._id, item._id)}
+                                                    className="mt-2 w-full px-3 py-1.5 bg-blue-600 text-white text-xs font-bold rounded-lg hover:bg-blue-700 shadow-lg shadow-blue-500/20"
+                                                >
+                                                    Confirm Handover
+                                                </button>
+                                            )}
+
+                                            {item.returnExchange?.status === 'returned' && item.returnExchange.refundAmount && (
+                                                <div className="mt-2 text-right">
+                                                    <p className="text-xs text-gray-500">Refund Processed</p>
+                                                    <p className="font-bold text-green-600">${item.returnExchange.refundAmount.toFixed(2)}</p>
+                                                    <p className="text-[10px] text-gray-400">{new Date(item.returnExchange.refundedAt).toLocaleDateString()}</p>
+                                                </div>
+                                            )}
+                                         </div>
+                                      )}
                                     </div>
                                 </div>
                             ))}
@@ -375,7 +474,15 @@ const Orders = () => {
                 </div>
 
                 {/* Footer Actions */}
-                <div className="p-6 border-t border-gray-100 bg-gray-50 flex justify-end">
+                <div className="p-6 border-t border-gray-100 bg-gray-50 flex justify-between items-center">
+                    {(selectedOrder.orderStatus === 'Placed' || selectedOrder.orderStatus === 'Processing') && (
+                        <button 
+                            onClick={() => { setCancelModal({ isOpen: true, orderId: selectedOrder._id }); setSelectedOrder(null); }}
+                            className="px-4 py-2 border border-red-200 text-red-600 font-bold rounded-xl hover:bg-red-50 hover:border-red-300 transition-colors"
+                        >
+                            Cancel Order
+                        </button>
+                    )}
                     <button 
                         onClick={() => setSelectedOrder(null)}
                         className="px-6 py-2.5 bg-white border border-gray-300 text-gray-700 font-bold rounded-xl hover:bg-gray-100 transition-colors shadow-sm"
@@ -429,12 +536,28 @@ const Orders = () => {
 
                   <div>
                      <label className="block text-sm font-bold text-gray-700 mb-2">Reason (Required)</label>
-                     <textarea 
+                     <select 
                         required
                         value={returnReason}
                         onChange={(e) => setReturnReason(e.target.value)}
-                        placeholder="Please explain why you want to return or exchange this item..."
-                        className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-4 focus:ring-blue-100 focus:border-blue-500 min-h-[120px] text-sm resize-none outline-none transition-all placeholder:text-gray-400"
+                        className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-4 focus:ring-blue-100 focus:border-blue-500 text-sm outline-none transition-all mb-4"
+                     >
+                        <option value="">Select a reason</option>
+                        <option value="Damaged or defective product">Damaged or defective product</option>
+                        <option value="Wrong item delivered">Wrong item delivered</option>
+                        <option value="Size or fit issues">Size or fit issues</option>
+                        <option value="Product not as described">Product not as described</option>
+                        <option value="Missing parts or accessories">Missing parts or accessories</option>
+                        <option value="Unsatisfactory quality">Unsatisfactory quality</option>
+                        <option value="Change of mind">Change of mind</option>
+                     </select>
+                     
+                     <label className="block text-sm font-bold text-gray-700 mb-2">Additional Comments</label>
+                     <textarea 
+                        value={returnComments}
+                        onChange={(e) => setReturnComments(e.target.value)}
+                        placeholder="Please provide any additional details..."
+                        className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-4 focus:ring-blue-100 focus:border-blue-500 min-h-[100px] text-sm resize-none outline-none transition-all placeholder:text-gray-400"
                      />
                   </div>
 
@@ -449,7 +572,7 @@ const Orders = () => {
                      <button 
                         type="submit" 
                         disabled={isSubmitting}
-                        className="flex-1 px-4 py-3 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 disabled:opacity-70 disabled:cursor-not-allowed shadow-lg shadow-blue-500/30 transition-all hover:-translate-y-0.5"
+                        className="flex-1 px-4 py-3 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-blue-500/30 transition-all hover:-translate-y-0.5"
                      >
                         {isSubmitting ? 'Submitting...' : 'Submit Request'}
                      </button>
@@ -457,6 +580,48 @@ const Orders = () => {
                </form>
             </div>
          </div>
+      )}
+      {/* Cancel Order Modal */}
+      {cancelModal.isOpen && (
+          <div className="fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-[70] backdrop-blur-sm">
+             <div className="bg-white rounded-3xl w-full max-w-md p-8 shadow-2xl animate-in fade-in zoom-in duration-200 border border-gray-100">
+                <div className="text-center mb-6">
+                    <h3 className="text-2xl font-extrabold text-gray-900 text-red-600">Cancel Order?</h3>
+                    <p className="text-gray-500 text-sm mt-1">Please tell us why you want to cancel.</p>
+                </div>
+                <form onSubmit={handleCancelSubmit} className="space-y-4">
+                     <div>
+                        <label className="block text-sm font-bold text-gray-700 mb-2">Reason</label>
+                        <select 
+                            required 
+                            className="w-full px-4 py-2 border rounded-xl"
+                            value={cancelReason}
+                            onChange={(e) => setCancelReason(e.target.value)}
+                        >
+                            <option value="">Select a reason</option>
+                            <option value="Changed my mind">Changed my mind</option>
+                            <option value="Found better price">Found better price</option>
+                            <option value="Ordered by mistake">Ordered by mistake</option>
+                            <option value="Other">Other</option>
+                        </select>
+                     </div>
+                     <div>
+                        <label className="block text-sm font-bold text-gray-700 mb-2">Description</label>
+                        <textarea 
+                            className="w-full px-4 py-2 border rounded-xl"
+                            value={cancelDescription}
+                            onChange={(e) => setCancelDescription(e.target.value)}
+                        />
+                     </div>
+                     <div className="flex gap-4">
+                        <button type="button" onClick={() => setCancelModal({ isOpen: false, orderId: null })} className="flex-1 px-4 py-2 border rounded-xl font-bold">Close</button>
+                        <button type="submit" disabled={isSubmitting} className="flex-1 px-4 py-2 bg-red-600 text-white rounded-xl font-bold hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed">
+                            {isSubmitting ? 'Processing...' : 'Confirm Cancel'}
+                        </button>
+                     </div>
+                </form>
+             </div>
+          </div>
       )}
     </div>
   );

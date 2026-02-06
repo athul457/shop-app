@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useCart } from '../../context/CartContext';
+import useAuth from '../../hooks/useAuth';
 import { CreditCard, Wallet, Truck, CheckCircle2, ShieldCheck, Lock, AlertCircle } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import toast from 'react-hot-toast';
@@ -7,17 +8,20 @@ import { createOrder } from '../../api/order.api';
 
 const Payment = () => {
   const { cartItems, clearCart } = useCart();
+  const { user } = useAuth();
   const navigate = useNavigate();
+  // Get address and coupon from navigation state
+  const { state } = useLocation();
+  const shippingAddress = state?.address;
+  const discount = state?.discount || 0;
+  const appliedCoupon = state?.appliedCoupon || null;
+
   const [paymentMethod, setPaymentMethod] = useState('cod');
   const [isProcessing, setIsProcessing] = useState(false);
 
   const subtotal = cartItems.reduce((acc, item) => acc + (item.price * item.quantity), 0);
   const tax = subtotal * 0.08;
-  const total = subtotal + tax;
-
-  // Get address from navigation state
-  const { state } = useLocation();
-  const shippingAddress = state?.address;
+  const total = subtotal + tax - discount;
 
   // Redirect if no address selected
   useEffect(() => {
@@ -56,6 +60,21 @@ const Payment = () => {
         await createOrder(orderData);
         toast.success("Order Placed Successfully!");
         
+        // Mark Coupon as Used
+        if (appliedCoupon && user) {
+            const allCoupons = JSON.parse(localStorage.getItem('mockVendorOffers') || '[]');
+            const updatedCoupons = allCoupons.map(c => {
+                if (c.code === appliedCoupon.code) {
+                    const currentUsedBy = c.usedBy || [];
+                    if (!currentUsedBy.includes(user._id || user.id)) {
+                        return { ...c, usedBy: [...currentUsedBy, (user._id || user.id)] };
+                    }
+                }
+                return c;
+            });
+            localStorage.setItem('mockVendorOffers', JSON.stringify(updatedCoupons));
+        }
+
         // Clear cart
         clearCart();
         
@@ -177,10 +196,16 @@ const Payment = () => {
                     <span>Shipping</span>
                     <span className="text-green-600 font-bold">Free</span>
                  </div>
-                 <div className="flex justify-between pt-3 border-t border-gray-200 mt-2">
-                    <span className="font-bold text-lg text-gray-900">Total</span>
-                    <span className="font-extrabold text-2xl text-blue-600">${total.toFixed(2)}</span>
-                 </div>
+                  {discount > 0 && (
+                      <div className="flex justify-between text-green-600 text-sm font-medium">
+                        <span>Coupon Discount</span>
+                        <span>-${discount.toFixed(2)}</span>
+                      </div>
+                  )}
+                  <div className="flex justify-between pt-3 border-t border-gray-200 mt-2">
+                     <span className="font-bold text-lg text-gray-900">Total</span>
+                     <span className="font-extrabold text-2xl text-blue-600">${total.toFixed(2)}</span>
+                  </div>
               </div>
 
               <button 

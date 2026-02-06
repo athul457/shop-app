@@ -1,0 +1,50 @@
+User 1
+Email : "ammini123@gmail.com"
+Password: "TEA804238"
+Category: "Animal Products"
+
+User 2
+Email : "abhipetta123@gmail.com"
+Password: "TEA804238"
+Category: "Animal Products"
+
+User 3
+Email : "alexkinju987@gmail.com"
+Password: "TEA804238"
+Category: "Bags"
+
+User 4
+Email : "jiyadikka456@gmail.com"
+Password: "TEA804238"
+Category: "Crockery"
+
+User 5
+Email : "anugrahrgay99@gmail.com"
+Password: "TEA804238"
+Category: "Children Items"
+
+User 6
+Email : "athultomman999@gmail.com"
+Password: "TEA804238"
+Category: "Laptops"
+
+User 7
+Email : "aswinachoottan45@gmail.com"
+Password: "TEA804238"
+Category: "Electronics"
+
+User 8
+Email : "najeesvv@gmail.com"
+Password: "TEA804238"
+Category: "Home Appliances"
+
+User 9
+Email : "snehajosepr678@gmail.com"
+Password: "TEA804238"
+Category: "Fashion"
+
+User 10
+Email : "afsalaspal876@gmail.com"
+Password: "TEA804238"
+Category: "Footwear"
+

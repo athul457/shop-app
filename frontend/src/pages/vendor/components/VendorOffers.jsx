@@ -52,6 +52,7 @@ const VendorOffers = () => {
         const offer = {
             id: Date.now().toString(),
             vendorId: finalVendorId, // Use formatted ID
+            usedBy: [], // Track users who redeemed this
             ...newOffer,
             code: newOffer.code.toUpperCase(),
             value: Number(newOffer.value),

@@ -9,7 +9,8 @@ const {
   updateUser,
   addAddress,
   deleteAddress,
-  updateUserProfile
+  updateUserProfile,
+  updateAddress
 } = require('../CONTROLLERS/userController');
 
 const storage = multer.diskStorage({
@@ -47,6 +48,8 @@ router
   .put(protect, authorize('admin'), updateUser);
 
 router.route('/address').post(protect, addAddress);
-router.route('/address/:addressId').delete(protect, deleteAddress);
+router.route('/address/:addressId')
+  .delete(protect, deleteAddress)
+  .put(protect, updateAddress);
 
 module.exports = router;

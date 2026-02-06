@@ -1,10 +1,11 @@
 import { useState } from 'react';
-import { MapPin, Plus, Trash2, X, Home, Briefcase, Building, Phone } from 'lucide-react';
+import { MapPin, Plus, Trash2, X, Home, Briefcase, Building, Phone, Pencil } from 'lucide-react';
 import { useAddress } from '../../context/AddressContext';
 
 const Addresses = () => {
-  const { addresses, removeAddress, addNewAddress } = useAddress();
+  const { addresses, removeAddress, addNewAddress, updateAddress } = useAddress();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingId, setEditingId] = useState(null);
   const [formData, setFormData] = useState({
     type: 'Home',
     name: '',
@@ -21,9 +22,17 @@ const Addresses = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const success = await addNewAddress(formData);
+    let success;
+    
+    if (editingId) {
+        success = await updateAddress(editingId, formData);
+    } else {
+        success = await addNewAddress(formData);
+    }
+    
     if (success) {
        setIsModalOpen(false);
+       setEditingId(null);
        setFormData({
         type: 'Home',
         name: '',
@@ -36,6 +45,20 @@ const Addresses = () => {
     }
   };
 
+  const handleEdit = (addr) => {
+      setEditingId(addr.id || addr._id);
+      setFormData({
+          type: addr.type,
+          name: addr.name,
+          phone: addr.phone,
+          address: addr.address,
+          city: addr.city,
+          pincode: addr.pincode,
+          landmark: addr.landmark || ''
+      });
+      setIsModalOpen(true);
+  };
+
   const getIcon = (type) => {
       switch(type) {
           case 'Home': return <Home size={16} />;
@@ -46,6 +69,15 @@ const Addresses = () => {
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
+      <style>{`
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+      `}</style>
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-4">
         <div>
           <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">My Addresses</h1>
@@ -53,7 +85,19 @@ const Addresses = () => {
         </div>
         
         <button 
-           onClick={() => setIsModalOpen(true)} 
+           onClick={() => {
+               setEditingId(null);
+               setFormData({
+                type: 'Home',
+                name: '',
+                phone: '',
+                address: '',
+                city: '',
+                pincode: '',
+                landmark: ''
+               });
+               setIsModalOpen(true);
+           }} 
            className="px-6 py-3 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 hover:-translate-y-0.5 transition-all shadow-lg shadow-blue-500/20 flex items-center gap-2"
         >
            <Plus size={20} /> Add New Address
@@ -85,13 +129,22 @@ const Addresses = () => {
                             {addr.name && <span className="text-xs text-gray-500 font-medium">{addr.name}</span>}
                          </div>
                       </div>
-                      <button 
-                         onClick={() => removeAddress(addr.id)} 
-                         className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors opacity-0 group-hover:opacity-100"
-                         title="Delete Address"
-                      >
-                         <Trash2 size={18} />
-                      </button>
+                      <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <button 
+                           onClick={() => handleEdit(addr)} 
+                           className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                           title="Edit Address"
+                        >
+                           <Pencil size={18} />
+                        </button>
+                        <button 
+                           onClick={() => removeAddress(addr.id)} 
+                           className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                           title="Delete Address"
+                        >
+                           <Trash2 size={18} />
+                        </button>
+                      </div>
                    </div>
                    
                    <p className="text-gray-700 text-sm leading-relaxed mb-4 h-10 line-clamp-2">{addr.address}</p>
@@ -113,16 +166,16 @@ const Addresses = () => {
       {/* Add Address Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-[60] p-4 backdrop-blur-sm">
-            <div className="bg-white rounded-3xl shadow-2xl w-full max-w-lg overflow-hidden animate-in fade-in zoom-in duration-200">
+            <div className="bg-white rounded-3xl shadow-2xl w-full max-w-lg max-h-[90vh] flex flex-col overflow-hidden animate-in fade-in zoom-in duration-200">
                 <div className="px-8 py-6 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
                     <div>
-                        <h2 className="text-xl font-extrabold text-gray-900">Add New Address</h2>
-                        <p className="text-sm text-gray-500">Enter your shipping details below</p>
+                        <h2 className="text-xl font-extrabold text-gray-900">{editingId ? 'Edit Address' : 'Add New Address'}</h2>
+                        <p className="text-sm text-gray-500">{editingId ? 'Update your shipping details' : 'Enter your shipping details below'}</p>
                     </div>
                     <button onClick={() => setIsModalOpen(false)} className="p-2 bg-white rounded-full hover:bg-gray-100 text-gray-400 hover:text-gray-600 transition-colors shadow-sm"><X size={20}/></button>
                 </div>
                 
-                <form onSubmit={handleSubmit} className="p-8 space-y-6">
+                <form onSubmit={handleSubmit} className="p-8 space-y-6 overflow-y-auto scrollbar-hide">
                     <div className="grid grid-cols-2 gap-6">
                          <div className="space-y-2">
                             <label className="block text-sm font-bold text-gray-700">Address Type</label>
@@ -170,7 +223,7 @@ const Addresses = () => {
                     </div>
 
                     <button type="submit" className="w-full bg-blue-600 text-white py-4 rounded-xl font-bold hover:bg-blue-700 transition-all shadow-lg shadow-blue-500/20 hover:-translate-y-0.5 active:scale-95 mt-4">
-                        Save Address
+                        {editingId ? 'Update Address' : 'Save Address'}
                     </button>
                 </form>
             </div>

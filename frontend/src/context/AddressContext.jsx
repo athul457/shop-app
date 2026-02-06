@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
-import { addAddress, deleteAddress } from '../api/address.api';
+import { addAddress, deleteAddress, updateAddress as updateAddressApi } from '../api/address.api';
 import { useAuth } from './AuthContext';
 
 const AddressContext = createContext();
@@ -46,10 +46,18 @@ export const AddressProvider = ({ children }) => {
     }
   };
 
-  const updateAddress = (id, updatedData) => {
-    // For now, backend only supports add/delete. 
-    // Implementing update would require a new endpoint.
-    toast.error("Edit not supported yet. Please delete and re-add.");
+  const updateAddress = async (id, updatedData) => {
+    try {
+      const updatedAddresses = await updateAddressApi(id, updatedData);
+      setAddresses(updatedAddresses.map(addr => ({ ...addr, id: addr._id })));
+      // Update global user state
+      updateUser({ ...user, addresses: updatedAddresses });
+      toast.success("Address updated successfully");
+      return true;
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to update address");
+      return false;
+    }
   };
 
   return (

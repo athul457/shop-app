@@ -145,6 +145,38 @@ const updateUserProfile = asyncHandler(async (req, res) => {
   }
 });
 
+// @desc    Update specific address
+// @route   PUT /api/users/address/:addressId
+// @access  Private
+const updateAddress = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.user._id);
+
+  if (user) {
+    const addressIndex = user.addresses.findIndex(
+      (addr) => addr._id.toString() === req.params.addressId
+    );
+
+    if (addressIndex > -1) {
+      const { type, name, phone, address, city, pincode, landmark } = req.body;
+      
+      // Update fields
+      user.addresses[addressIndex] = {
+        ...user.addresses[addressIndex].toObject(), // Keep existing fields like _id
+        type, name, phone, address, city, pincode, landmark
+      };
+
+      await user.save();
+      res.json(user.addresses);
+    } else {
+      res.status(404);
+      throw new Error('Address not found');
+    }
+  } else {
+    res.status(404);
+    throw new Error('User not found');
+  }
+});
+
 module.exports = {
   getUsers,
   deleteUser,
@@ -153,4 +185,5 @@ module.exports = {
   updateUserProfile,
   addAddress,
   deleteAddress,
+  updateAddress,
 };

@@ -26,6 +26,7 @@ import AdminProducts from './pages/admin/AdminProducts';
 import AdminUsers from './pages/admin/AdminUsers';
 import AdminOrders from './pages/admin/AdminOrders';
 import AdminVendors from './pages/admin/AdminVendors';
+import AdminCoupons from './pages/admin/AdminCoupons';
 
 function App() {
   return (
@@ -66,6 +67,7 @@ function App() {
            <Route path="users" element={<AdminUsers />} />
            <Route path="orders" element={<AdminOrders />} />
            <Route path="vendors" element={<AdminVendors />} />
+           <Route path="coupons" element={<AdminCoupons />} />
         </Route>
       </Routes>
       </WishlistProvider>

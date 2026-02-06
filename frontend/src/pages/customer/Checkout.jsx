@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useCart } from '../../context/CartContext';
 import { useAddress } from '../../context/AddressContext';
 import { useNavigate } from 'react-router-dom';
-import { MapPin, Phone, Mail, User, Home, ArrowRight, Plus, CheckCircle2, ShieldCheck, Briefcase } from 'lucide-react';
+import { MapPin, Phone, Mail, User, Home, ArrowRight, Plus, CheckCircle2, ShieldCheck, Briefcase, Tag } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 const Checkout = () => {
@@ -64,10 +64,91 @@ const Checkout = () => {
     }
   };
 
+  // Coupon State
+  const [couponCode, setCouponCode] = useState('');
+  const [discount, setDiscount] = useState(0);
+  const [appliedCoupon, setAppliedCoupon] = useState(null);
+
+  const handleApplyCoupon = () => {
+    if (!couponCode.trim()) return;
+
+    const allCoupons = JSON.parse(localStorage.getItem('mockVendorOffers') || '[]');
+    const coupon = allCoupons.find(c => c.code === couponCode.toUpperCase() && c.status === 'ACTIVE');
+
+    if (!coupon) {
+        toast.error("Invalid or inactive coupon code");
+        return;
+    }
+
+    // Check Expiry
+    if (new Date(coupon.validUntil) < new Date().setHours(0,0,0,0)) {
+        toast.error("This coupon has expired");
+        return;
+    }
+
+    // VENDOR SPECIFICITY CHECK
+    // Robust comparison: normalize IDs by removing 'vendor_' prefix to handle data inconsistencies
+    const normalizeId = (id) => id ? String(id).replace('vendor_', '') : '';
+    
+    // Filter items where normalized vendor IDs match
+    const eligibleItems = cartItems.filter(item => normalizeId(item.vendorId) === normalizeId(coupon.vendorId));
+    
+    if (eligibleItems.length === 0) {
+        // Safe access to first item's vendor for debug message
+        const cartVendor = cartItems.length > 0 ? cartItems[0].vendorId : 'Empty Cart';
+        
+        toast.error(`Mismatch! Coupon Vendor: ${normalizeId(coupon.vendorId)} vs Item Vendor: ${normalizeId(cartVendor)}`);
+        
+        // Detailed log
+        console.log("Mismatch Details:", { 
+            couponRaw: coupon.vendorId, 
+            couponNorm: normalizeId(coupon.vendorId),
+            cartRaw: cartVendor,
+            cartNorm: normalizeId(cartVendor)
+        });
+        return;
+    }
+
+    // Calculate Discount on Eligible Items Only
+    let calculatedDiscount = 0;
+    const eligibleSubtotal = eligibleItems.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+
+    if (eligibleItems.length > 0 && coupon.minOrder && eligibleSubtotal < Number(coupon.minOrder)) {
+         toast.error(`Min order value of ₹${coupon.minOrder} required for this vendor's products`);
+         return;
+    }
+
+    if (coupon.type === 'PERCENTAGE') {
+        const discountAmount = (eligibleSubtotal * coupon.value) / 100;
+        // Apply max cap if logically needed (but user requirements didn't specify strict cap logic here besides admin limit on creation. 
+        // Assuming flat cap of 500 from previous prompt context if meaningful, or just raw value. 
+        // Let's stick to raw calculation unless max amount is a field. 
+        // Actually, previous prompt mentioned "Max 500" in UI example. Let's assume a safe generic cap or raw.
+        // For now, raw percentage.
+        calculatedDiscount = discountAmount;
+        // Optional: Cap at eligible subtotal (can't be free)
+        if (calculatedDiscount > eligibleSubtotal) calculatedDiscount = eligibleSubtotal; 
+    } else {
+        calculatedDiscount = Number(coupon.value);
+        if (calculatedDiscount > eligibleSubtotal) calculatedDiscount = eligibleSubtotal;
+    }
+
+    setDiscount(calculatedDiscount);
+    setAppliedCoupon(coupon);
+    toast.success("Coupon Applied Successfully!");
+  };
+
+  const removeCoupon = () => {
+      setDiscount(0);
+      setAppliedCoupon(null);
+      setCouponCode('');
+      toast.success("Coupon removed");
+  };
+
   // Order Calculations
   const subtotal = cartItems.reduce((acc, item) => acc + (item.price * item.quantity), 0);
   const tax = subtotal * 0.08;
-  const total = subtotal + tax;
+  const total = subtotal + tax - discount;
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
@@ -300,6 +381,39 @@ const Checkout = () => {
          <div>
             <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 sticky top-24">
                <h3 className="text-xl font-extrabold text-gray-900 mb-6">Order Summary</h3>
+               
+               {/* Coupon Input */}
+               <div className="mb-6 p-4 bg-gray-50 rounded-xl border border-gray-100">
+                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Apply Coupon</label>
+                  {appliedCoupon ? (
+                      <div className="flex justify-between items-center bg-green-100 border border-green-200 p-3 rounded-lg">
+                          <div>
+                              <p className="text-green-800 font-bold flex items-center gap-1">
+                                  <Tag size={14} /> {appliedCoupon.code}
+                              </p>
+                              <p className="text-xs text-green-600">Saved ${discount.toFixed(2)}</p>
+                          </div>
+                          <button onClick={removeCoupon} className="text-xs font-bold text-red-500 hover:underline">Remove</button>
+                      </div>
+                  ) : (
+                      <div className="flex gap-2">
+                          <input 
+                             type="text" 
+                             value={couponCode}
+                             onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
+                             placeholder="Enter code"
+                             className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm font-bold uppercase focus:ring-2 focus:ring-blue-500 outline-none"
+                          />
+                          <button 
+                             onClick={handleApplyCoupon}
+                             className="px-4 py-2 bg-gray-900 text-white text-sm font-bold rounded-lg hover:bg-gray-800"
+                          >
+                             Apply
+                          </button>
+                      </div>
+                  )}
+               </div>
+
                <div className="space-y-4 mb-6">
                   {cartItems.map(item => (
                      <div key={item.id} className="flex justify-between items-center text-sm py-2 border-b border-gray-50 last:border-0">
@@ -330,6 +444,12 @@ const Checkout = () => {
                      <span>Shipping</span>
                      <span className="text-green-600 font-bold">Free</span>
                   </div>
+                  {discount > 0 && (
+                      <div className="flex justify-between text-green-600 text-sm font-medium">
+                        <span>Coupon Discount</span>
+                        <span>-${discount.toFixed(2)}</span>
+                      </div>
+                  )}
                   <div className="flex justify-between pt-3 border-t border-gray-200 mt-2">
                      <span className="font-bold text-lg text-gray-900">Total Pay</span>
                      <span className="font-extrabold text-2xl text-blue-600">${total.toFixed(2)}</span>

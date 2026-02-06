@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Package, Users, ShoppingBag, Loader, ArrowRight, Store } from 'lucide-react';
+import { Package, Users, ShoppingBag, Loader, ArrowRight, Store, Ticket } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import useAuth from '../../hooks/useAuth';
@@ -101,6 +101,16 @@ const AdminDashboard = () => {
                     <div>
                         <h2 className="text-xl font-bold text-gray-800">Orders</h2>
                         <p className="text-gray-500">Track Shipments</p>
+                    </div>
+                </Link>
+
+                <Link to="/admin/coupons" className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow flex items-center gap-4 group">
+                    <div className="p-4 bg-pink-100 text-pink-600 rounded-lg group-hover:bg-pink-600 group-hover:text-white transition-colors">
+                        <Ticket size={32} />
+                    </div>
+                    <div>
+                        <h2 className="text-xl font-bold text-gray-800">Coupons</h2>
+                        <p className="text-gray-500">Review & Governance</p>
                     </div>
                 </Link>
 

@@ -39,6 +39,19 @@ const ProductDetails = () => {
      load();
   }, [id, navigate]);
 
+  // Fetch Coupons
+  const [coupons, setCoupons] = useState([]);
+  useEffect(() => {
+    const allOffers = JSON.parse(localStorage.getItem('mockVendorOffers') || '[]');
+    const activeOffers = allOffers.filter(o => o.status === 'ACTIVE' && new Date(o.validUntil) >= new Date().setHours(0,0,0,0));
+    setCoupons(activeOffers);
+  }, []);
+
+  const copyCode = (code) => {
+    navigator.clipboard.writeText(code);
+    toast.success("Coupon code copied!");
+  };
+
   // State for reviews
   const [reviews, setReviews] = useState([]);
   const [rating, setRating] = useState(5);
@@ -212,6 +225,35 @@ const ProductDetails = () => {
               <p className="mt-6 text-gray-600 leading-relaxed border-t border-b border-gray-100 py-6">
                  {product.description}
               </p>
+
+              {/* Offers Section */}
+              {coupons.length > 0 && (
+                  <div className="mt-6 mb-8">
+                      <h3 className="font-bold text-gray-900 mb-3 flex items-center gap-2 text-sm uppercase tracking-wide">
+                          <span className="text-lg">🏷️</span> Available offers
+                      </h3>
+                      <div className="space-y-3">
+                          {coupons.map((offer) => (
+                              <div key={offer.id} className="bg-green-50/50 border border-green-200 border-dashed rounded-lg p-3 flex justify-between items-center">
+                                  <div>
+                                      <p className="font-bold text-gray-900 text-sm">
+                                          🎉 {offer.code} <span className="text-gray-500 font-normal">– Get {offer.type === 'PERCENTAGE' ? `${offer.value}% OFF` : `₹${offer.value} OFF`}</span>
+                                      </p>
+                                      <p className="text-xs text-green-600 mt-0.5 font-medium">
+                                          Max Discount ₹500 • Valid till {offer.validUntil}
+                                      </p>
+                                  </div>
+                                  <button 
+                                      onClick={() => copyCode(offer.code)}
+                                      className="text-xs font-bold text-green-700 hover:bg-green-100 px-3 py-1.5 rounded transition-colors"
+                                  >
+                                      APPLY
+                                  </button>
+                              </div>
+                          ))}
+                      </div>
+                  </div>
+              )}
 
              {/* Vendor Info */}
              <div className="border-t border-b border-gray-100 py-4 mb-8">

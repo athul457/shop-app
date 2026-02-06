@@ -22,3 +22,14 @@ export const deleteAddress = async (addressId) => {
     });
     return response.data;
 };
+
+// Update address
+export const updateAddress = async (addressId, addressData) => {
+    const response = await axios.put(`${API_URL}/${addressId}`, addressData, {
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+    });
+    return response.data;
+};

@@ -10,7 +10,7 @@ const PromotionalBanner = () => {
       title: "Children's Items",
       discount: "25% OFF",
       bg: "bg-orange-100",
-      image: "https://images.pexels.com/photos/3663013/pexels-photo-3663013.jpeg?auto=compress&cs=tinysrgb&w=600"
+      image: "https://images.pexels.com/photos/1194027/pexels-photo-1194027.jpeg?auto=compress&cs=tinysrgb&w=600"
     },
     {
       id: 2,
@@ -45,7 +45,7 @@ const PromotionalBanner = () => {
       title: "Pet Foods",
       discount: "15% OFF",
       bg: "bg-yellow-100",
-      image: "https://images.pexels.com/photos/45201/hamster-rodent-pet-cute-45201.jpeg?auto=compress&cs=tinysrgb&w=600"
+      image: "https://images.pexels.com/photos/27175967/pexels-photo-27175967.jpeg?auto=compress&cs=tinysrgb&w=600"
     }
   ];
 

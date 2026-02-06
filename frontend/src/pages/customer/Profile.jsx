@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import useAuth from '../../hooks/useAuth';
-import { User, Mail, Lock, Camera, Edit2, Shield, AlertCircle, Save, X, ChevronRight, Sparkles } from 'lucide-react';
+import { User, Mail, Lock, Camera, Edit2, Shield, AlertCircle, Save, X, ChevronRight, Sparkles, Store } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const Profile = () => {
@@ -150,14 +150,14 @@ const Profile = () => {
                    </div>
 
                    <div className="grid grid-cols-2 gap-4 border-t border-gray-100 pt-6">
-                       <div className="text-center">
+                       {/* <div className="text-center">
                            <span className="block text-2xl font-bold text-gray-900">0</span>
                            <span className="text-xs text-gray-500 font-bold uppercase tracking-wide">Orders</span>
                        </div>
                        <div className="text-center border-l border-gray-100">
                            <span className="block text-2xl font-bold text-gray-900">0</span>
                            <span className="text-xs text-gray-500 font-bold uppercase tracking-wide">Reviews</span>
-                       </div>
+                       </div> */}
                    </div>
                 </div>
              </div>
@@ -270,7 +270,7 @@ const Profile = () => {
              </div>
 
              {/* Become a Vendor CTA - Only for customers */}
-             {user?.role === 'customer' && (
+             {/* {user?.role === 'customer' && (
                 <div className="relative overflow-hidden bg-gradient-to-br from-indigo-900 via-purple-900 to-indigo-900 rounded-2xl shadow-xl p-6 text-white group cursor-pointer hover:shadow-purple-900/40 transition-shadow">
                    <div className="absolute top-0 right-0 p-24 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 pointer-events-none"></div>
                    <div className="absolute bottom-0 left-0 p-24 bg-indigo-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 pointer-events-none"></div>
@@ -288,7 +288,7 @@ const Profile = () => {
                       </button>
                    </div>
                 </div>
-             )}
+             )} */}
           </div>
        </div>
     </div>

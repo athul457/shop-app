@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Package, Users, ShoppingBag, Loader, ArrowRight } from 'lucide-react';
+import { Package, Users, ShoppingBag, Loader, ArrowRight, Store } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import useAuth from '../../hooks/useAuth';
@@ -11,6 +11,8 @@ const AdminDashboard = () => {
         recentUsers: []
     });
     const [loading, setLoading] = useState(true);
+
+    const [vendorRequests, setVendorRequests] = useState([]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -31,6 +33,11 @@ const AdminDashboard = () => {
                     usersCount: data.length,
                     recentUsers: data.slice(0, 5) // Get first 5 users
                 });
+
+                // Fetch Vendor Requests from LocalStorage
+                const requests = JSON.parse(localStorage.getItem('mockVendorRequests') || '[]');
+                setVendorRequests(requests);
+
             } catch (error) {
                 console.error("Error fetching dashboard data", error);
             } finally {
@@ -42,6 +49,27 @@ const AdminDashboard = () => {
             fetchData();
         }
     }, [user]);
+
+    const handleVendorAction = (requestId, status) => {
+        const updatedRequests = vendorRequests.map(req => {
+            if (req.id === requestId) {
+                return { ...req, status };
+            }
+            return req;
+        });
+
+        // Update state
+        setVendorRequests(updatedRequests);
+        
+        // Update localStorage
+        localStorage.setItem('mockVendorRequests', JSON.stringify(updatedRequests));
+
+        // In a real app, you would also make an API call here to update the user's role
+        if (status === 'approved') {
+            // alert(`Vendor request from ${updatedRequests.find(r => r.id === requestId).storeName} approved!`);
+            // Here we would typically call: axios.put(`/api/users/${userId}/role`, { role: 'vendor' })
+        }
+    };
 
     if (loading) {
         return (
@@ -83,6 +111,16 @@ const AdminDashboard = () => {
                     <div>
                         <h2 className="text-xl font-bold text-gray-800">{stats.usersCount} Users</h2>
                         <p className="text-gray-500">Manage Accounts</p>
+                    </div>
+                </Link>
+
+                <Link to="/admin/vendors" className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow flex items-center gap-4 group">
+                    <div className="p-4 bg-yellow-100 text-yellow-600 rounded-lg group-hover:bg-yellow-600 group-hover:text-white transition-colors">
+                        <li className="list-none"><Store size={32} /></li>
+                    </div>
+                    <div>
+                        <h2 className="text-xl font-bold text-gray-800">Vendors</h2>
+                        <p className="text-gray-500">Applications: {vendorRequests.filter(r => r.status === 'pending').length}</p>
                     </div>
                 </Link>
             </div>

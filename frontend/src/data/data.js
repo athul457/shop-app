@@ -6,7 +6,7 @@ const products = [
     "price": 549.99,
     "category": "Home Appliances",
     "stock": 12,
-    // "image_url": "https://images.pexels.com/photos/5591596/pexels-photo-5591596.jpeg",
+    "image_url": "https://images.pexels.com/photos/3743075/pexels-photo-3743075.jpeg?auto=compress&cs=tinysrgb&w=600",
     "vendorId": "vendor_001",
     "isApproved": true,
     "rating": 4.6
@@ -18,7 +18,7 @@ const products = [
     "price": 699.99,
     "category": "Home Appliances",
     "stock": 10,
-    // "image_url": "https://images.pexels.com/photos/5824876/pexels-photo-5824876.jpeg",
+    "image_url": "https://images.pexels.com/photos/29409104/pexels-photo-29409104.jpeg?auto=compress&cs=tinysrgb&w=600",
     "vendorId": "vendor_002",
     "isApproved": true,
     "rating": 4.7
@@ -30,7 +30,7 @@ const products = [
     "price": 199.99,
     "category": "Home Appliances",
     "stock": 18,
-    // "image_url": "https://images.pexels.com/photos/4108807/pexels-photo-4108807.jpeg",
+    "image_url": "https://images.pexels.com/photos/4367289/pexels-photo-4367289.jpeg?auto=compress&cs=tinysrgb&w=600",
     "vendorId": "vendor_003",
     "isApproved": true,
     "rating": 4.4
@@ -42,7 +42,7 @@ const products = [
     "price": 89.99,
     "category": "Home Appliances",
     "stock": 30,
-    // "image_url": "https://images.pexels.com/photos/4226806/pexels-photo-4226806.jpeg",
+    "image_url": "https://images.pexels.com/photos/1450903/pexels-photo-1450903.jpeg?auto=compress&cs=tinysrgb&w=600",
     "vendorId": "vendor_001",
     "isApproved": true,
     "rating": 4.5
@@ -54,7 +54,7 @@ const products = [
     "price": 74.99,
     "category": "Home Appliances",
     "stock": 25,
-    // "image_url": "https://images.pexels.com/photos/5824505/pexels-photo-5824505.jpeg",
+    "image_url": "https://images.pexels.com/photos/5824505/pexels-photo-5824505.jpeg",
     "vendorId": "vendor_004",
     "isApproved": true,
     "rating": 4.3
@@ -66,7 +66,7 @@ const products = [
     "price": 129.99,
     "category": "Home Appliances",
     "stock": 20,
-    // "image_url": "https://images.pexels.com/photos/4107274/pexels-photo-4107274.jpeg",
+    "image_url": "https://images.pexels.com/photos/4107274/pexels-photo-4107274.jpeg",
     "vendorId": "vendor_002",
     "isApproved": true,
     "rating": 4.4
@@ -78,7 +78,7 @@ const products = [
     "price": 149.99,
     "category": "Home Appliances",
     "stock": 15,
-    // "image_url": "https://images.pexels.com/photos/5946080/pexels-photo-5946080.jpeg",
+    "image_url": "https://images.pexels.com/photos/5946080/pexels-photo-5946080.jpeg",
     "vendorId": "vendor_003",
     "isApproved": true,
     "rating": 4.6
@@ -90,7 +90,7 @@ const products = [
     "price": 39.99,
     "category": "Home Appliances",
     "stock": 40,
-    // "image_url": "https://images.pexels.com/photos/302899/pexels-photo-302899.jpeg",
+    "image_url": "https://images.pexels.com/photos/302899/pexels-photo-302899.jpeg",
     "vendorId": "vendor_001",
     "isApproved": true,
     "rating": 4.2
@@ -102,7 +102,7 @@ const products = [
     "price": 59.99,
     "category": "Home Appliances",
     "stock": 22,
-    // "image_url": "https://images.pexels.com/photos/4108717/pexels-photo-4108717.jpeg",
+    "image_url": "https://images.pexels.com/photos/4108717/pexels-photo-4108717.jpeg",
     "vendorId": "vendor_004",
     "isApproved": true,
     "rating": 4.3
@@ -114,7 +114,7 @@ const products = [
     "price": 79.99,
     "category": "Home Appliances",
     "stock": 35,
-    // "image_url": "https://images.pexels.com/photos/276024/pexels-photo-276024.jpeg",
+    "image_url": "https://images.pexels.com/photos/276024/pexels-photo-276024.jpeg",
     "vendorId": "vendor_002",
     "isApproved": true,
     "rating": 4.5
@@ -128,7 +128,7 @@ const products = [
     "price": 34.99,
     "category": "Fashion",
     "stock": 60,
-    // "image_url": "https://images.pexels.com/photos/297933/pexels-photo-297933.jpeg",
+    "image_url": "https://images.pexels.com/photos/297933/pexels-photo-297933.jpeg?auto=compress&cs=tinysrgb&w=600",
     "vendorId": "vendor_001",
     "isApproved": true,
     "rating": 4.4
@@ -140,7 +140,7 @@ const products = [
     "price": 49.99,
     "category": "Fashion",
     "stock": 45,
-    // "image_url": "https://images.pexels.com/photos/1488463/pexels-photo-1488463.jpeg",
+    "image_url": "https://images.pexels.com/photos/1488463/pexels-photo-1488463.jpeg?auto=compress&cs=tinysrgb&w=600",
     "vendorId": "vendor_002",
     "isApproved": true,
     "rating": 4.6
@@ -152,7 +152,7 @@ const products = [
     "price": 54.99,
     "category": "Fashion",
     "stock": 50,
-    // "image_url": "https://images.pexels.com/photos/1598507/pexels-photo-1598507.jpeg",
+    "image_url": "https://images.pexels.com/photos/1598507/pexels-photo-1598507.jpeg?auto=compress&cs=tinysrgb&w=600",
     "vendorId": "vendor_003",
     "isApproved": true,
     "rating": 4.5
@@ -164,7 +164,7 @@ const products = [
     "price": 19.99,
     "category": "Fashion",
     "stock": 100,
-    // "image_url": "https://images.pexels.com/photos/1002640/pexels-photo-1002640.jpeg",
+    "image_url": "https://images.pexels.com/photos/14579191/pexels-photo-14579191.jpeg?auto=compress&cs=tinysrgb&w=600",
     "vendorId": "vendor_004",
     "isApproved": true,
     "rating": 4.3
@@ -176,7 +176,7 @@ const products = [
     "price": 44.99,
     "category": "Fashion",
     "stock": 40,
-    // "image_url": "https://images.pexels.com/photos/428340/pexels-photo-428340.jpeg",
+    "image_url": "https://images.pexels.com/photos/428340/pexels-photo-428340.jpeg",
     "vendorId": "vendor_001",
     "isApproved": true,
     "rating": 4.4
@@ -188,7 +188,7 @@ const products = [
     "price": 69.99,
     "category": "Fashion",
     "stock": 35,
-    // "image_url": "https://images.pexels.com/photos/994523/pexels-photo-994523.jpeg",
+    "image_url": "https://images.pexels.com/photos/994523/pexels-photo-994523.jpeg",
     "vendorId": "vendor_002",
     "isApproved": true,
     "rating": 4.6
@@ -200,7 +200,7 @@ const products = [
     "price": 39.99,
     "category": "Fashion",
     "stock": 55,
-    // "image_url": "https://images.pexels.com/photos/3760610/pexels-photo-3760610.jpeg",
+    "image_url": "https://images.pexels.com/photos/3760610/pexels-photo-3760610.jpeg",
     "vendorId": "vendor_003",
     "isApproved": true,
     "rating": 4.5
@@ -212,7 +212,7 @@ const products = [
     "price": 24.99,
     "category": "Fashion",
     "stock": 80,
-    // "image_url": "https://images.pexels.com/photos/6311669/pexels-photo-6311669.jpeg",
+    "image_url": "https://images.pexels.com/photos/6311669/pexels-photo-6311669.jpeg",
     "vendorId": "vendor_004",
     "isApproved": true,
     "rating": 4.4
@@ -224,7 +224,7 @@ const products = [
     "price": 22.99,
     "category": "Fashion",
     "stock": 70,
-    // "image_url": "https://images.pexels.com/photos/322207/pexels-photo-322207.jpeg",
+    "image_url": "https://images.pexels.com/photos/322207/pexels-photo-322207.jpeg",
     "vendorId": "vendor_001",
     "isApproved": true,
     "rating": 4.3
@@ -236,7 +236,7 @@ const products = [
     "price": 59.99,
     "category": "Fashion",
     "stock": 45,
-    // "image_url": "https://images.pexels.com/photos/2529148/pexels-photo-2529148.jpeg",
+    "image_url": "https://images.pexels.com/photos/2529148/pexels-photo-2529148.jpeg",
     "vendorId": "vendor_002",
     "isApproved": true,
     "rating": 4.6
@@ -249,7 +249,7 @@ const products = [
     "price": 89.99,
     "category": "Bags",
     "stock": 30,
-    // "image_url": "https://images.pexels.com/photos/1152077/pexels-photo-1152077.jpeg",
+    "image_url": "https://images.pexels.com/photos/1152077/pexels-photo-1152077.jpeg",
     "vendorId": "vendor_001",
     "isApproved": true,
     "rating": 4.6
@@ -261,7 +261,7 @@ const products = [
     "price": 59.99,
     "category": "Bags",
     "stock": 40,
-    // "image_url": "https://images.pexels.com/photos/2905238/pexels-photo-2905238.jpeg",
+    "image_url": "https://images.pexels.com/photos/2905238/pexels-photo-2905238.jpeg",
     "vendorId": "vendor_002",
     "isApproved": true,
     "rating": 4.5
@@ -273,7 +273,7 @@ const products = [
     "price": 49.99,
     "category": "Bags",
     "stock": 35,
-    // "image_url": "https://images.pexels.com/photos/932401/pexels-photo-932401.jpeg",
+    "image_url": "https://images.pexels.com/photos/932401/pexels-photo-932401.jpeg",
     "vendorId": "vendor_003",
     "isApproved": true,
     "rating": 4.4
@@ -285,7 +285,7 @@ const products = [
     "price": 64.99,
     "category": "Bags",
     "stock": 28,
-    // "image_url": "https://images.pexels.com/photos/3748221/pexels-photo-3748221.jpeg",
+    "image_url": "https://images.pexels.com/photos/3748221/pexels-photo-3748221.jpeg",
     "vendorId": "vendor_004",
     "isApproved": true,
     "rating": 4.5
@@ -297,7 +297,7 @@ const products = [
     "price": 39.99,
     "category": "Bags",
     "stock": 50,
-    // "image_url": "https://images.pexels.com/photos/3746310/pexels-photo-3746310.jpeg",
+    "image_url": "https://images.pexels.com/photos/3746310/pexels-photo-3746310.jpeg",
     "vendorId": "vendor_001",
     "isApproved": true,
     "rating": 4.3
@@ -309,7 +309,7 @@ const products = [
     "price": 34.99,
     "category": "Bags",
     "stock": 60,
-    // "image_url": "https://images.pexels.com/photos/1152075/pexels-photo-1152075.jpeg",
+    "image_url": "https://images.pexels.com/photos/1152075/pexels-photo-1152075.jpeg",
     "vendorId": "vendor_002",
     "isApproved": true,
     "rating": 4.4
@@ -321,7 +321,7 @@ const products = [
     "price": 29.99,
     "category": "Bags",
     "stock": 45,
-    // "image_url": "https://images.pexels.com/photos/1091117/pexels-photo-1091117.jpeg",
+    "image_url": "https://images.pexels.com/photos/1091117/pexels-photo-1091117.jpeg",
     "vendorId": "vendor_003",
     "isApproved": true,
     "rating": 4.2
@@ -333,7 +333,7 @@ const products = [
     "price": 19.99,
     "category": "Bags",
     "stock": 70,
-    // "image_url": "https://images.pexels.com/photos/322207/pexels-photo-322207.jpeg",
+    "image_url": "https://images.pexels.com/photos/322207/pexels-photo-322207.jpeg",
     "vendorId": "vendor_004",
     "isApproved": true,
     "rating": 4.3
@@ -345,7 +345,7 @@ const products = [
     "price": 129.99,
     "category": "Bags",
     "stock": 20,
-    // "image_url": "https://images.pexels.com/photos/2905237/pexels-photo-2905237.jpeg",
+    "image_url": "https://images.pexels.com/photos/2905237/pexels-photo-2905237.jpeg",
     "vendorId": "vendor_001",
     "isApproved": true,
     "rating": 4.6
@@ -357,7 +357,7 @@ const products = [
     "price": 54.99,
     "category": "Bags",
     "stock": 25,
-    // "image_url": "https://images.pexels.com/photos/274973/pexels-photo-274973.jpeg",
+    "image_url": "https://images.pexels.com/photos/274973/pexels-photo-274973.jpeg",
     "vendorId": "vendor_002",
     "isApproved": true,
     "rating": 4.5
@@ -369,7 +369,7 @@ const products = [
     "price": 129.99,
     "category": "Crockery",
     "stock": 15,
-    // "image_url": "https://images.pexels.com/photos/6103654/pexels-photo-6103654.jpeg",
+    "image_url": "https://images.pexels.com/photos/6103654/pexels-photo-6103654.jpeg?auto=compress&cs=tinysrgb&w=600",
     "vendorId": "vendor_002",
     "isApproved": true,
     "rating": 4.7
@@ -381,7 +381,7 @@ const products = [
     "price": 49.99,
     "category": "Crockery",
     "stock": 25,
-    // "image_url": "https://images.pexels.com/photos/302899/pexels-photo-302899.jpeg",
+    "image_url": "https://images.pexels.com/photos/302899/pexels-photo-302899.jpeg?auto=compress&cs=tinysrgb&w=600",
     "vendorId": "vendor_001",
     "isApproved": true,
     "rating": 4.5
@@ -393,7 +393,7 @@ const products = [
     "price": 24.99,
     "category": "Crockery",
     "stock": 40,
-    // "image_url": "https://images.pexels.com/photos/584399/living-room-couch-interior-room-584399.jpeg",
+    "image_url": "https://images.pexels.com/photos/8274736/pexels-photo-8274736.jpeg?auto=compress&cs=tinysrgb&w=600",
     "vendorId": "vendor_003",
     "isApproved": true,
     "rating": 4.4
@@ -405,7 +405,7 @@ const products = [
     "price": 39.99,
     "category": "Crockery",
     "stock": 50,
-    // "image_url": "https://images.pexels.com/photos/403571/pexels-photo-403571.jpeg",
+    "image_url": "https://images.pexels.com/photos/5745655/pexels-photo-5745655.jpeg?auto=compress&cs=tinysrgb&w=600",
     "vendorId": "vendor_004",
     "isApproved": true,
     "rating": 4.3
@@ -417,7 +417,7 @@ const products = [
     "price": 34.99,
     "category": "Crockery",
     "stock": 35,
-    // "image_url": "https://images.pexels.com/photos/6270083/pexels-photo-6270083.jpeg",
+    "image_url": "https://images.pexels.com/photos/6270083/pexels-photo-6270083.jpeg",
     "vendorId": "vendor_001",
     "isApproved": true,
     "rating": 4.5
@@ -429,7 +429,7 @@ const products = [
     "price": 29.99,
     "category": "Crockery",
     "stock": 60,
-    // "image_url": "https://images.pexels.com/photos/6270078/pexels-photo-6270078.jpeg",
+    "image_url": "https://images.pexels.com/photos/6270078/pexels-photo-6270078.jpeg",
     "vendorId": "vendor_002",
     "isApproved": true,
     "rating": 4.2
@@ -441,7 +441,7 @@ const products = [
     "price": 19.99,
     "category": "Crockery",
     "stock": 45,
-    // "image_url": "https://images.pexels.com/photos/1309777/pexels-photo-1309777.jpeg",
+    "image_url": "https://images.pexels.com/photos/1309777/pexels-photo-1309777.jpeg",
     "vendorId": "vendor_003",
     "isApproved": true,
     "rating": 4.4
@@ -453,7 +453,7 @@ const products = [
     "price": 27.99,
     "category": "Crockery",
     "stock": 55,
-    // "image_url": "https://images.pexels.com/photos/585750/pexels-photo-585750.jpeg",
+    "image_url": "https://images.pexels.com/photos/585750/pexels-photo-585750.jpeg",
     "vendorId": "vendor_004",
     "isApproved": true,
     "rating": 4.5
@@ -465,7 +465,7 @@ const products = [
     "price": 32.99,
     "category": "Crockery",
     "stock": 30,
-    // "image_url": "https://images.pexels.com/photos/3737594/pexels-photo-3737594.jpeg",
+    "image_url": "https://images.pexels.com/photos/3737594/pexels-photo-3737594.jpeg",
     "vendorId": "vendor_001",
     "isApproved": true,
     "rating": 4.6
@@ -477,7 +477,7 @@ const products = [
     "price": 44.99,
     "category": "Crockery",
     "stock": 28,
-    // "image_url": "https://images.pexels.com/photos/6311666/pexels-photo-6311666.jpeg",
+    "image_url": "https://images.pexels.com/photos/6311666/pexels-photo-6311666.jpeg",
     "vendorId": "vendor_002",
     "isApproved": true,
     "rating": 4.5
@@ -489,7 +489,7 @@ const products = [
     "price": 24.99,
     "category": "Children Items",
     "stock": 50,
-    // "image_url": "https://images.pexels.com/photos/3662667/pexels-photo-3662667.jpeg",
+    "image_url": "https://images.pexels.com/photos/3662667/pexels-photo-3662667.jpeg",
     "vendorId": "vendor_003",
     "isApproved": true,
     "rating": 4.6
@@ -501,7 +501,7 @@ const products = [
     "price": 19.99,
     "category": "Children Items",
     "stock": 65,
-    // "image_url": "https://images.pexels.com/photos/3933025/pexels-photo-3933025.jpeg",
+    "image_url": "https://images.pexels.com/photos/3933025/pexels-photo-3933025.jpeg",
     "vendorId": "vendor_001",
     "isApproved": true,
     "rating": 4.5
@@ -513,7 +513,7 @@ const products = [
     "price": 29.99,
     "category": "Children Items",
     "stock": 40,
-    // "image_url": "https://images.pexels.com/photos/590493/pexels-photo-590493.jpeg",
+    "image_url": "https://images.pexels.com/photos/590493/pexels-photo-590493.jpeg",
     "vendorId": "vendor_002",
     "isApproved": true,
     "rating": 4.7
@@ -525,7 +525,7 @@ const products = [
     "price": 34.99,
     "category": "Children Items",
     "stock": 35,
-    // "image_url": "https://images.pexels.com/photos/163036/mario-yoschi-figures-funny-163036.jpeg",
+    "image_url": "https://images.pexels.com/photos/163036/mario-yoschi-figures-funny-163036.jpeg",
     "vendorId": "vendor_004",
     "isApproved": true,
     "rating": 4.4
@@ -537,7 +537,7 @@ const products = [
     "price": 17.99,
     "category": "Children Items",
     "stock": 80,
-    // "image_url": "https://images.pexels.com/photos/459206/pexels-photo-459206.jpeg",
+    "image_url": "https://images.pexels.com/photos/459206/pexels-photo-459206.jpeg",
     "vendorId": "vendor_001",
     "isApproved": true,
     "rating": 4.6
@@ -549,7 +549,7 @@ const products = [
     "price": 21.99,
     "category": "Children Items",
     "stock": 55,
-    // "image_url": "https://images.pexels.com/photos/207983/pexels-photo-207983.jpeg",
+    "image_url": "https://images.pexels.com/photos/207983/pexels-photo-207983.jpeg",
     "vendorId": "vendor_002",
     "isApproved": true,
     "rating": 4.5
@@ -561,7 +561,7 @@ const products = [
     "price": 14.99,
     "category": "Children Items",
     "stock": 70,
-    // "image_url": "https://images.pexels.com/photos/591652/puzzle-children-play-591652.jpeg",
+    "image_url": "https://images.pexels.com/photos/591652/puzzle-children-play-591652.jpeg",
     "vendorId": "vendor_003",
     "isApproved": true,
     "rating": 4.4
@@ -573,7 +573,7 @@ const products = [
     "price": 26.99,
     "category": "Children Items",
     "stock": 45,
-    // "image_url": "https://images.pexels.com/photos/3662668/pexels-photo-3662668.jpeg",
+    "image_url": "https://images.pexels.com/photos/3662668/pexels-photo-3662668.jpeg",
     "vendorId": "vendor_004",
     "isApproved": true,
     "rating": 4.3
@@ -585,7 +585,7 @@ const products = [
     "price": 12.99,
     "category": "Children Items",
     "stock": 90,
-    // "image_url": "https://images.pexels.com/photos/3662665/pexels-photo-3662665.jpeg",
+    "image_url": "https://images.pexels.com/photos/3662665/pexels-photo-3662665.jpeg",
     "vendorId": "vendor_001",
     "isApproved": true,
     "rating": 4.5
@@ -597,7 +597,7 @@ const products = [
     "price": 9.99,
     "category": "Children Items",
     "stock": 100,
-    // "image_url": "https://images.pexels.com/photos/163077/play-ball-sport-toys-163077.jpeg",
+    "image_url": "https://images.pexels.com/photos/163077/play-ball-sport-toys-163077.jpeg",
     "vendorId": "vendor_002",
     "isApproved": true,
     "rating": 4.4
@@ -609,7 +609,7 @@ const products = [
     "price": 39.99,
     "category": "Animal Foods",
     "stock": 60,
-    // "image_url": "https://images.pexels.com/photos/6568957/pexels-photo-6568957.jpeg",
+    "image_url": "https://images.pexels.com/photos/6568957/pexels-photo-6568957.jpeg",
     "vendorId": "vendor_004",
     "isApproved": true,
     "rating": 4.7
@@ -621,7 +621,7 @@ const products = [
     "price": 34.99,
     "category": "Animal Foods",
     "stock": 55,
-    // "image_url": "https://images.pexels.com/photos/1741205/pexels-photo-1741205.jpeg",
+    "image_url": "https://images.pexels.com/photos/1741205/pexels-photo-1741205.jpeg",
     "vendorId": "vendor_001",
     "isApproved": true,
     "rating": 4.6
@@ -633,7 +633,7 @@ const products = [
     "price": 19.99,
     "category": "Animal Foods",
     "stock": 70,
-    // "image_url": "https://images.pexels.com/photos/458799/pexels-photo-458799.jpeg",
+    "image_url": "https://images.pexels.com/photos/458799/pexels-photo-458799.jpeg",
     "vendorId": "vendor_002",
     "isApproved": true,
     "rating": 4.4
@@ -645,7 +645,7 @@ const products = [
     "price": 9.99,
     "category": "Animal Foods",
     "stock": 120,
-    // "image_url": "https://images.pexels.com/photos/128756/pexels-photo-128756.jpeg",
+    "image_url": "https://images.pexels.com/photos/128756/pexels-photo-128756.jpeg",
     "vendorId": "vendor_003",
     "isApproved": true,
     "rating": 4.5
@@ -657,7 +657,7 @@ const products = [
     "price": 14.99,
     "category": "Animal Foods",
     "stock": 65,
-    // "image_url": "https://images.pexels.com/photos/45201/hamster-rodent-pet-cute-45201.jpeg",
+    "image_url": "https://images.pexels.com/photos/45201/hamster-rodent-pet-cute-45201.jpeg",
     "vendorId": "vendor_004",
     "isApproved": true,
     "rating": 4.3
@@ -669,7 +669,7 @@ const products = [
     "price": 24.99,
     "category": "Beauty Products",
     "stock": 50,
-    // "image_url": "https://images.pexels.com/photos/2582937/pexels-photo-2582937.jpeg",
+    "image_url": "https://images.pexels.com/photos/2582937/pexels-photo-2582937.jpeg",
     "vendorId": "vendor_001",
     "isApproved": true,
     "rating": 4.7
@@ -681,7 +681,7 @@ const products = [
     "price": 34.99,
     "category": "Beauty Products",
     "stock": 40,
-    // "image_url": "https://images.pexels.com/photos/3685530/pexels-photo-3685530.jpeg",
+    "image_url": "https://images.pexels.com/photos/3685530/pexels-photo-3685530.jpeg",
     "vendorId": "vendor_002",
     "isApproved": true,
     "rating": 4.8
@@ -693,7 +693,7 @@ const products = [
     "price": 29.99,
     "category": "Beauty Products",
     "stock": 35,
-    // "image_url": "https://images.pexels.com/photos/3018845/pexels-photo-3018845.jpeg",
+    "image_url": "https://images.pexels.com/photos/3018845/pexels-photo-3018845.jpeg",
     "vendorId": "vendor_003",
     "isApproved": true,
     "rating": 4.6
@@ -705,7 +705,7 @@ const products = [
     "price": 19.99,
     "category": "Beauty Products",
     "stock": 60,
-    // "image_url": "https://images.pexels.com/photos/457701/pexels-photo-457701.jpeg",
+    "image_url": "https://images.pexels.com/photos/457701/pexels-photo-457701.jpeg",
     "vendorId": "vendor_004",
     "isApproved": true,
     "rating": 4.5
@@ -717,7 +717,7 @@ const products = [
     "price": 14.99,
     "category": "Beauty Products",
     "stock": 70,
-    // "image_url": "https://images.pexels.com/photos/3685523/pexels-photo-3685523.jpeg",
+    "image_url": "https://images.pexels.com/photos/3685523/pexels-photo-3685523.jpeg",
     "vendorId": "vendor_001",
     "isApproved": true,
     "rating": 4.7
@@ -729,7 +729,7 @@ const products = [
     "price": 12.99,
     "category": "Beauty Products",
     "stock": 80,
-    // "image_url": "https://images.pexels.com/photos/3762466/pexels-photo-3762466.jpeg",
+    "image_url": "https://images.pexels.com/photos/3762466/pexels-photo-3762466.jpeg",
     "vendorId": "vendor_002",
     "isApproved": true,
     "rating": 4.4
@@ -741,7 +741,7 @@ const products = [
     "price": 18.99,
     "category": "Beauty Products",
     "stock": 55,
-    // "image_url": "https://images.pexels.com/photos/3373736/pexels-photo-3373736.jpeg",
+    "image_url": "https://images.pexels.com/photos/3373736/pexels-photo-3373736.jpeg",
     "vendorId": "vendor_003",
     "isApproved": true,
     "rating": 4.3
@@ -753,7 +753,7 @@ const products = [
     "price": 24.99,
     "category": "Beauty Products",
     "stock": 45,
-    // "image_url": "https://images.pexels.com/photos/3757942/pexels-photo-3757942.jpeg",
+    "image_url": "https://images.pexels.com/photos/3757942/pexels-photo-3757942.jpeg",
     "vendorId": "vendor_004",
     "isApproved": true,
     "rating": 4.5
@@ -765,7 +765,7 @@ const products = [
     "price": 16.99,
     "category": "Beauty Products",
     "stock": 65,
-    // "image_url": "https://images.pexels.com/photos/3618606/pexels-photo-3618606.jpeg",
+    "image_url": "https://images.pexels.com/photos/3618606/pexels-photo-3618606.jpeg",
     "vendorId": "vendor_001",
     "isApproved": true,
     "rating": 4.6
@@ -777,7 +777,7 @@ const products = [
     "price": 27.99,
     "category": "Beauty Products",
     "stock": 30,
-    // "image_url": "https://images.pexels.com/photos/2582935/pexels-photo-2582935.jpeg",
+    "image_url": "https://images.pexels.com/photos/2582935/pexels-photo-2582935.jpeg",
     "vendorId": "vendor_002",
     "isApproved": true,
     "rating": 4.8

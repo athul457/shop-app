@@ -31,11 +31,19 @@ const Home = () => {
     },
     {
       id: 4,
-      title: "Modern Home Living",
-      desc: "Transform your space with our premium furniture and decor collection.",
-      bg: "bg-gradient-to-r from-purple-600 to-indigo-800",
-      image: "https://images.pexels.com/photos/1350789/pexels-photo-1350789.jpeg?auto=compress&cs=tinysrgb&w=800"
+      title: "Exclusive Accessories",
+      desc: "Complete your look with our curated collection of luxury watches and leather goods.",
+      bg: "bg-gradient-to-r from-rose-500 to-pink-700",
+      image: "https://images.pexels.com/photos/190819/pexels-photo-190819.jpeg?auto=compress&cs=tinysrgb&w=800"
+    },
+    {
+      id: 5,
+      title: "Active Performance",
+      desc: "Reach your fitness goals with professional-grade sports equipment and apparel.",
+      bg: "bg-gradient-to-r from-orange-500 to-amber-600",
+      image: "https://images.pexels.com/photos/1552242/pexels-photo-1552242.jpeg?auto=compress&cs=tinysrgb&w=800"
     }
+    
   ];
 
   const features = [
@@ -150,7 +158,7 @@ const Home = () => {
       <section className="max-w-7xl mx-auto px-4 mb-20">
          <SectionHeader title="Big Discounts" subtitle="Unbeatable prices on premium items" />
          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            {products.filter(p => p.category === 'Electronics').slice(0, 4).map((product) => (
+            {products.filter(p => p.category === 'Crockery').slice(0, 4).map((product) => (
                 <ProductCard key={product.id} product={product} />
             ))}
          </div>
@@ -187,7 +195,7 @@ const Home = () => {
          <div className="max-w-7xl mx-auto px-4">
             <SectionHeader title="Best Sales" subtitle="Top rated products loved by everyone" />
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                {products.filter(p => p.category === 'Home & Living').slice(0, 4).map((product) => (
+                {products.filter(p => p.category === 'Home Appliances').slice(0, 4).map((product) => (
                     <ProductCard key={product.id} product={product} />
                 ))}
             </div>

@@ -91,6 +91,9 @@ const updateUser = asyncHandler(async (req, res) => {
     user.name = req.body.name || user.name;
     user.email = req.body.email || user.email;
     user.role = req.body.role || user.role;
+    if (req.body.isSuspended !== undefined) {
+      user.isSuspended = req.body.isSuspended;
+    }
 
     const updatedUser = await user.save();
 
@@ -99,6 +102,7 @@ const updateUser = asyncHandler(async (req, res) => {
       name: updatedUser.name,
       email: updatedUser.email,
       role: updatedUser.role,
+      isSuspended: updatedUser.isSuspended,
     });
   } else {
     res.status(404);

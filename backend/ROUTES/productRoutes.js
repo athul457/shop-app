@@ -13,7 +13,7 @@ router.route('/').get(getProducts).post(protect, authorize('admin', 'vendor'), c
 router
   .route('/:id')
   .get(getProductById)
-  .delete(protect, authorize('admin'), deleteProduct)
+  .delete(protect, authorize('admin', 'vendor'), deleteProduct)
   .put(protect, authorize('admin', 'vendor'), updateProduct);
 
 module.exports = router;

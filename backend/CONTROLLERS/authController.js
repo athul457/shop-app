@@ -69,6 +69,11 @@ const loginUser = asyncHandler(async (req, res) => {
     throw new Error('Invalid credentials');
   }
 
+  if (user.isSuspended) {
+    res.status(401);
+    throw new Error('Account suspended. Contact admin.');
+  }
+
   const isMatch = await bcrypt.compare(password, user.password);
   console.log(`Password match: ${isMatch}`);
 

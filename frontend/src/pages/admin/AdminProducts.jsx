@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Plus, Trash2, Edit, Search, X, CheckCircle, XCircle } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { fetchProducts, createProduct, updateProduct, deleteProduct } from '../../api/product.api';
+import { fetchUsers } from '../../api/user.api';
 
 const AdminProducts = () => {
     const [products, setProducts] = useState([]);
@@ -23,9 +24,70 @@ const AdminProducts = () => {
         isApproved: true
     });
 
+
+
+    const [users, setUsers] = useState([]);
+
     useEffect(() => {
         loadProducts();
+        loadUsers();
     }, []);
+
+    const loadUsers = async () => {
+        try {
+            const data = await fetchUsers();
+            setUsers(data);
+        } catch (error) {
+            console.error("Failed to load users");
+        }
+    };
+
+    const handleReview = async (product, status) => {
+        let message = '';
+        if (status === false) { // Reject
+            message = window.prompt("Reason for rejection:");
+            if (message === null) return; // Cancelled
+        } else {
+             message = "Congratulations! Your product has been approved.";
+        }
+
+        try {
+            // Update product status
+            const updated = await updateProduct(product._id, { isApproved: status });
+            setProducts(products.map(p => p._id === updated._id ? updated : p));
+            toast.success(`Product ${status ? 'Approved' : 'Rejected'}`);
+
+            // Send Notification
+            // Find owner email
+            // Product might have ownerId. If not, try to match vendorId format "vendor_ID"
+            let ownerId = product.ownerId;
+            if (!ownerId && product.vendorId && product.vendorId.startsWith('vendor_')) {
+                 ownerId = product.vendorId.replace('vendor_', '');
+            }
+
+            const owner = users.find(u => u._id === ownerId || u.id === ownerId);
+            
+            if (owner) {
+                const newNotification = {
+                    id: Date.now(),
+                    userId: owner._id,
+                    userEmail: owner.email,
+                    type: status ? 'success' : 'error',
+                    title: status ? 'Product Approved' : 'Product Rejected',
+                    message: message || `Your product "${product.name}" has been ${status ? 'approved' : 'rejected'}.`,
+                    read: false,
+                    createdAt: new Date().toISOString()
+                };
+
+                const existingNotifications = JSON.parse(localStorage.getItem('mockNotifications') || '[]');
+                localStorage.setItem('mockNotifications', JSON.stringify([newNotification, ...existingNotifications]));
+            }
+
+        } catch (error) {
+            console.error(error);
+            toast.error("Review failed");
+        }
+    };
 
     const loadProducts = async () => {
         try {
@@ -208,10 +270,24 @@ const AdminProducts = () => {
                                     <td className="p-4 font-medium">${product.price}</td>
                                     <td className="p-4">{product.stock}</td>
                                     <td className="p-4">
-                                        {product.isApproved ? 
-                                            <span className="flex items-center gap-1 text-green-600 text-sm font-medium"><CheckCircle size={14} /> Approved</span> : 
-                                            <span className="flex items-center gap-1 text-yellow-600 text-sm font-medium"><XCircle size={14} /> Pending</span>
-                                        }
+                                        {product.isApproved ? (
+                                            <span className="flex items-center gap-1 text-green-600 text-sm font-medium"><CheckCircle size={14} /> Approved</span>
+                                        ) : (
+                                            <div className="flex gap-2">
+                                                <button 
+                                                    onClick={() => handleReview(product, true)}
+                                                    className="px-2 py-1 bg-green-100 text-green-700 rounded text-xs font-bold hover:bg-green-200"
+                                                >
+                                                    Approve
+                                                </button>
+                                                <button 
+                                                    onClick={() => handleReview(product, false)}
+                                                    className="px-2 py-1 bg-red-100 text-red-700 rounded text-xs font-bold hover:bg-red-200"
+                                                >
+                                                    Reject
+                                                </button>
+                                            </div>
+                                        )}
                                     </td>
                                     <td className="p-4 flex gap-2">
                                         <button onClick={() => openModal(product)} className="p-2 text-blue-600 hover:bg-blue-50 rounded"><Edit size={16} /></button>

@@ -29,7 +29,7 @@ const Products = () => {
   // Filter States
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [selectedVendor, setSelectedVendor] = useState("All");
-  const [priceRange, setPriceRange] = useState({ min: 0, max: 1000 });
+  const [priceRange, setPriceRange] = useState({ min: 0, max: 100000 });
   const [minRating, setMinRating] = useState(0);
 
   // Get Search Param
@@ -37,7 +37,7 @@ const Products = () => {
   const searchQuery = searchParams.get("search")?.toLowerCase() || "";
 
   // Derived Data for Options
-  const categories = ["All", "Fashion", "Home Appliances", "Children Items", "Crockery", "Bags", "Animal Foods", "Beauty Products"];
+  const categories = ["All", "Electronics", "Fashion", "Home Appliances", "Children Items", "Crockery", "Bags", "Animal Foods", "Beauty Products"];
   const vendors = ["All", ...new Set(products.map(p => p.vendorId))];
 
   // Filtering Logic
@@ -68,7 +68,7 @@ const Products = () => {
   const resetFilters = () => {
     setSelectedCategory("All");
     setSelectedVendor("All");
-    setPriceRange({ min: 0, max: 1000 });
+    setPriceRange({ min: 0, max: 100000 });
     setMinRating(0);
   };
 

@@ -23,6 +23,10 @@ const userSchema = new mongoose.Schema({
     enum: ['customer', 'vendor', 'admin'],
     default: 'customer'
   },
+  isSuspended: {
+    type: Boolean,
+    default: false
+  },
   addresses: [{
     type: { type: String, default: 'Home' },
     name: { type: String, required: true },

@@ -197,14 +197,7 @@ const AdminOrders = () => {
                                                 Accept
                                             </button>
                                         )}
-                                        {order.isPaid && !order.isDelivered && !hasPendingRequests && (
-                                            <button 
-                                                onClick={() => handleDeliver(order._id)} 
-                                                className="px-3 py-1 bg-green-600 text-white rounded-lg text-sm font-medium hover:bg-green-700 transition flex items-center gap-1"
-                                            >
-                                                <Truck size={14} /> Deliver
-                                            </button>
-                                        )}
+
                                         {order.isDelivered && !hasPendingRequests && (
                                             <span className="text-gray-400 text-sm font-medium flex items-center gap-1"><CheckCircle size={14} /> Done</span>
                                         )}

@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:3000/api/products';
+const API_URL = '/api/products';
 
 // Helper to get token
 const getAuthHeaders = () => {
@@ -12,9 +12,17 @@ const getAuthHeaders = () => {
     };
 };
 
-export const fetchProducts = async () => {
-  const response = await axios.get(API_URL);
-  return response.data;
+export const fetchProducts = async (vendorId) => {
+    const token = localStorage.getItem('token');
+    const config = token ? getAuthHeaders() : {};
+    
+    let url = API_URL;
+    if (vendorId) {
+        url += `?vendorId=${vendorId}`;
+    }
+
+    const response = await axios.get(url, config);
+    return response.data;
 };
 
 export const fetchProductById = async (id) => {
@@ -23,16 +31,19 @@ export const fetchProductById = async (id) => {
 };
 
 export const createProduct = async (productData) => {
-  const response = await axios.post(API_URL, productData, getAuthHeaders());
-  return response.data;
+    const config = getAuthHeaders();
+    const response = await axios.post(API_URL, productData, config);
+    return response.data;
 };
 
 export const updateProduct = async (id, productData) => {
-  const response = await axios.put(`${API_URL}/${id}`, productData, getAuthHeaders());
-  return response.data;
+    const config = getAuthHeaders();
+    const response = await axios.put(`${API_URL}/${id}`, productData, config);
+    return response.data;
 };
 
 export const deleteProduct = async (id) => {
-  const response = await axios.delete(`${API_URL}/${id}`, getAuthHeaders());
-  return response.data;
+    const config = getAuthHeaders();
+    const response = await axios.delete(`${API_URL}/${id}`, config);
+    return response.data;
 };

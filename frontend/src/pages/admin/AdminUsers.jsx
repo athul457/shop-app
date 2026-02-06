@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Trash2, ShoppingBag, Loader } from 'lucide-react';
 import toast from 'react-hot-toast';
 import axios from 'axios';
+import { updateUserStatus } from '../../api/user.api'; // Import API
 
 const AdminUsers = () => {
     const [users, setUsers] = useState([]);
@@ -26,6 +27,38 @@ const AdminUsers = () => {
     useEffect(() => {
         fetchUsers();
     }, []);
+
+    const handleSuspend = async (user) => {
+        const action = user.isSuspended ? 'activate' : 'suspend';
+        if(window.confirm(`Are you sure you want to ${action} this user?`)) {
+            try {
+                await updateUserStatus(user._id, !user.isSuspended);
+                
+                // Update local list
+                setUsers(users.map(u => u._id === user._id ? { ...u, isSuspended: !user.isSuspended } : u));
+                
+                // Notify User
+                const newNotification = {
+                    id: Date.now(),
+                    userId: user._id,
+                    userEmail: user.email,
+                    type: 'error',
+                    title: 'Account Suspended',
+                    message: `Your account has been suspended. Please contact support.`,
+                    read: false,
+                    createdAt: new Date().toISOString()
+                };
+                if (!user.isSuspended) { // Only notify on suspension
+                     const existingNotifications = JSON.parse(localStorage.getItem('mockNotifications') || '[]');
+                     localStorage.setItem('mockNotifications', JSON.stringify([newNotification, ...existingNotifications]));
+                }
+
+                toast.success(`User ${user.isSuspended ? 'Activated' : 'Suspended'}`);
+            } catch (error) {
+                toast.error("Failed to update status");
+            }
+        }
+    };
 
     const handleDelete = async (id) => {
         if(window.confirm('Are you sure you want to delete this user?')) {
@@ -113,6 +146,7 @@ const AdminUsers = () => {
                                 <th className="p-4 font-semibold text-gray-600">Name</th>
                                 <th className="p-4 font-semibold text-gray-600">Email</th>
                                 <th className="p-4 font-semibold text-gray-600">Role</th>
+                                <th className="p-4 font-semibold text-gray-600">Status</th>
                                 <th className="p-4 font-semibold text-gray-600">Actions</th>
                             </tr>
                         </thead>
@@ -127,8 +161,18 @@ const AdminUsers = () => {
                                             {user.role}
                                         </span>
                                     </td>
+                                    <td className="p-4">
+                                        <span className={`px-2 py-1 rounded text-xs font-bold uppercase ${user.isSuspended ? 'bg-red-100 text-red-700' : 'bg-blue-100 text-blue-700'}`}>
+                                            {user.isSuspended ? 'Suspended' : 'Active'}
+                                        </span>
+                                    </td>
                                     <td className="p-4 flex gap-2">
-                                        <button className="p-2 text-gray-600 hover:bg-gray-100 rounded" title="View Orders"><ShoppingBag size={16} /></button>
+                                        <button 
+                                            onClick={() => handleSuspend(user)}
+                                            className={`px-3 py-1 rounded text-xs font-bold border transition-colors ${user.isSuspended ? 'bg-green-50 text-green-600 border-green-200 hover:bg-green-100' : 'bg-red-50 text-red-600 border-red-200 hover:bg-red-100'}`}
+                                        >
+                                            {user.isSuspended ? 'Activate' : 'Suspend'}
+                                        </button>
                                         <button onClick={() => handleDelete(user._id)} className="p-2 text-red-600 hover:bg-red-50 rounded" title="Delete User"><Trash2 size={16} /></button>
                                     </td>
                                 </tr>

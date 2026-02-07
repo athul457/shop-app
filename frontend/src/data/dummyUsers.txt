@@ -1,50 +1,105 @@
-User 1
+Vendors
+-----------------------------------
+Vendor 0
+Email : "athults754@gmail.com"
+Password: "TEA804238"
+Category: "Home Appliances"
+created:true
+
+Vendor 1
 Email : "ammini123@gmail.com"
 Password: "TEA804238"
 Category: "Animal Products"
+created:true
 
-User 2
+Vendor 2
 Email : "abhipetta123@gmail.com"
 Password: "TEA804238"
 Category: "Animal Products"
+created:true
 
-User 3
+Vendor 3
 Email : "alexkinju987@gmail.com"
 Password: "TEA804238"
 Category: "Bags"
 
-User 4
+Vendor 4
 Email : "jiyadikka456@gmail.com"
 Password: "TEA804238"
 Category: "Crockery"
 
-User 5
+Vendor 5
 Email : "anugrahrgay99@gmail.com"
 Password: "TEA804238"
 Category: "Children Items"
 
-User 6
+Vendor 6
 Email : "athultomman999@gmail.com"
 Password: "TEA804238"
 Category: "Laptops"
 
-User 7
+Vendor 7
 Email : "aswinachoottan45@gmail.com"
 Password: "TEA804238"
 Category: "Electronics"
 
-User 8
+Vendor 8
 Email : "najeesvv@gmail.com"
 Password: "TEA804238"
 Category: "Home Appliances"
 
-User 9
+Vendor 9
 Email : "snehajosepr678@gmail.com"
 Password: "TEA804238"
 Category: "Fashion"
+created:true
 
-User 10
+Vendor 10
 Email : "afsalaspal876@gmail.com"
 Password: "TEA804238"
 Category: "Footwear"
+
+Users
+-----------------------------------
+
+User 1
+Email : "alice.walker@gmail.com"
+Password: "USER123456"
+
+User 2
+Email : "bob.marley@gmail.com"
+Password: "USER123456"
+
+User 3
+Email : "charlie.brown@gmail.com"
+Password: "USER123456"
+
+User 4
+Email : "diana.prince@gmail.com"
+Password: "USER123456"
+
+User 5
+Email : "ethan.hunt@gmail.com"
+Password: "USER123456"
+
+User 6
+Email : "fiona.gallagher@gmail.com"
+Password: "USER123456"
+
+User 7
+Email : "george.costanza@gmail.com"
+Password: "USER123456"
+
+User 8
+Email : "hannah.baker@gmail.com"
+Password: "USER123456"
+
+User 9
+Email : "ian.mckellen@gmail.com"
+Password: "USER123456"
+
+User 10
+Email : "julia.roberts@gmail.com"
+Password: "USER123456"
+
 

@@ -787,7 +787,130 @@ const products = [
     "vendorId": "vendor_002",
     "isApproved": true,
     "rating": 4.8
+  },
+  [
+  {
+    "id": 101,
+    "name": "Wireless Bluetooth Headphones",
+    "description": "Over-ear wireless headphones with noise cancellation and deep bass.",
+    "price": 89.99,
+    "category": "Electronics",
+    "stock": 60,
+    "image_url": "https://images.pexels.com/photos/3394650/pexels-photo-3394650.jpeg?auto=compress&cs=tinysrgb&w=600",
+    "vendorId": "vendor_001",
+    "isApproved": true,
+    "rating": 4.5
+  },
+  {
+    "id": 102,
+    "name": "Smart LED TV 43 Inch",
+    "description": "Full HD smart TV with built-in apps and screen mirroring support.",
+    "price": 399.99,
+    "category": "Electronics",
+    "stock": 25,
+    "image_url": "https://images.pexels.com/photos/5721907/pexels-photo-5721907.jpeg?auto=compress&cs=tinysrgb&w=600",
+    "vendorId": "vendor_002",
+    "isApproved": true,
+    "rating": 4.4
+  },
+  {
+    "id": 103,
+    "name": "Smartphone 5G",
+    "description": "5G-enabled smartphone with AMOLED display and fast charging.",
+    "price": 699.99,
+    "category": "Electronics",
+    "stock": 40,
+    "image_url": "https://images.pexels.com/photos/607812/pexels-photo-607812.jpeg?auto=compress&cs=tinysrgb&w=600",
+    "vendorId": "vendor_003",
+    "isApproved": true,
+    "rating": 4.7
+  },
+  {
+    "id": 104,
+    "name": "Wireless Mouse",
+    "description": "Ergonomic wireless mouse with adjustable DPI levels.",
+    "price": 19.99,
+    "category": "Electronics",
+    "stock": 120,
+    "image_url": "https://images.pexels.com/photos/5082583/pexels-photo-5082583.jpeg?auto=compress&cs=tinysrgb&w=600",
+    "vendorId": "vendor_001",
+    "isApproved": true,
+    "rating": 4.3
+  },
+  {
+    "id": 105,
+    "name": "Mechanical Keyboard",
+    "description": "RGB backlit mechanical keyboard with blue switches.",
+    "price": 79.99,
+    "category": "Electronics",
+    "stock": 70,
+    "image_url": "https://images.pexels.com/photos/2115257/pexels-photo-2115257.jpeg?auto=compress&cs=tinysrgb&w=600",
+    "vendorId": "vendor_004",
+    "isApproved": true,
+    "rating": 4.6
+  },
+  {
+    "id": 106,
+    "name": "Smart Watch",
+    "description": "Fitness-focused smartwatch with heart rate and sleep tracking.",
+    "price": 149.99,
+    "category": "Electronics",
+    "stock": 55,
+    "image_url": "https://images.pexels.com/photos/267394/pexels-photo-267394.jpeg?auto=compress&cs=tinysrgb&w=600",
+    "vendorId": "vendor_002",
+    "isApproved": true,
+    "rating": 4.5
+  },
+  {
+    "id": 107,
+    "name": "Bluetooth Speaker",
+    "description": "Portable waterproof Bluetooth speaker with powerful sound.",
+    "price": 59.99,
+    "category": "Electronics",
+    "stock": 85,
+    "image_url": "https://images.pexels.com/photos/63703/pexels-photo-63703.jpeg?auto=compress&cs=tinysrgb&w=600",
+    "vendorId": "vendor_003",
+    "isApproved": true,
+    "rating": 4.4
+  },
+  {
+    "id": 108,
+    "name": "Laptop 15.6 Inch",
+    "description": "High-performance laptop suitable for work and entertainment.",
+    "price": 999.99,
+    "category": "Electronics",
+    "stock": 20,
+    "image_url": "https://images.pexels.com/photos/18105/pexels-photo.jpg?auto=compress&cs=tinysrgb&w=600",
+    "vendorId": "vendor_005",
+    "isApproved": true,
+    "rating": 4.6
+  },
+  {
+    "id": 109,
+    "name": "Power Bank 20000mAh",
+    "description": "Fast-charging power bank with dual USB output.",
+    "price": 39.99,
+    "category": "Electronics",
+    "stock": 100,
+    "image_url": "https://images.pexels.com/photos/4792734/pexels-photo-4792734.jpeg?auto=compress&cs=tinysrgb&w=600",
+    "vendorId": "vendor_001",
+    "isApproved": true,
+    "rating": 4.2
+  },
+  {
+    "id": 110,
+    "name": "Wireless Charging Pad",
+    "description": "Qi-certified wireless charging pad for smartphones.",
+    "price": 29.99,
+    "category": "Electronics",
+    "stock": 90,
+    "image_url": "https://images.pexels.com/photos/914913/pexels-photo-914913.jpeg?auto=compress&cs=tinysrgb&w=600",
+    "vendorId": "vendor_004",
+    "isApproved": true,
+    "rating": 4.3
   }
+]
+
 ]
 
 

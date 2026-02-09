@@ -1,0 +1,134 @@
+[
+  {
+    "_id": "69831240eace64f7378ad4df",
+    "name": "Athul Sukumaran",
+    "email": "athults754@gmail.com",
+    "role": "vendor"
+  },
+  {
+    "_id": "69831262eace64f7378ad4e3",
+    "name": "Athul Sukumaran",
+    "email": "athults457@gmail.com",
+    "role": "admin"
+  },
+  {
+    "_id": "69858ed77901ced0053acd7e",
+    "name": "ammini",
+    "email": "ammini123@gmail.com",
+    "role": "vendor"
+  },
+  {
+    "_id": "69863898a03f1a86840a4779",
+    "name": "Abhijith VA",
+    "email": "abhipetta123@gmail.com",
+    "role": "vendor"
+  },
+  {
+    "_id": "698638b1a03f1a86840a477c",
+    "name": "Alex Sunny",
+    "email": "alexkinju987@gmail.com",
+    "role": "vendor"
+  },
+  {
+    "_id": "698638cfa03f1a86840a477f",
+    "name": "Sayyed Muhammed Jiyad",
+    "email": "jiyadikka456@gmail.com",
+    "role": "vendor"
+  },
+  {
+    "_id": "698638eca03f1a86840a4782",
+    "name": "Anugrah RK",
+    "email": "anugrahrgay99@gmail.com",
+    "role": "customer"
+  },
+  {
+    "_id": "69863909a03f1a86840a4785",
+    "name": "Athul Thomas",
+    "email": "athultomman999@gmail.com",
+    "role": "customer"
+  },
+  {
+    "_id": "69863928a03f1a86840a4788",
+    "name": "Aswin MS",
+    "email": "aswinachoottan45@gmail.com",
+    "role": "customer"
+  },
+  {
+    "_id": "69863941a03f1a86840a478b",
+    "name": "Haseena A",
+    "email": "najeesvv@gmail.com",
+    "role": "customer"
+  },
+  {
+    "_id": "69863961a03f1a86840a478e",
+    "name": "Sneha Suresh",
+    "email": "snehajosepr678@gmail.com",
+    "role": "vendor"
+  },
+  {
+    "_id": "6986397aa03f1a86840a4791",
+    "name": "Muhammed Afsal",
+    "email": "afsalaspal876@gmail.com",
+    "role": "customer"
+  },
+  {
+    "_id": "698639a4a03f1a86840a4794",
+    "name": "Alice",
+    "email": "alice.walker@gmail.com",
+    "role": "customer"
+  },
+  {
+    "_id": "698639c8a03f1a86840a4797",
+    "name": "Bob",
+    "email": "bob.marley@gmail.com",
+    "role": "customer"
+  },
+  {
+    "_id": "698639eca03f1a86840a479a",
+    "name": "Charlie",
+    "email": "charlie.brown@gmail.com",
+    "role": "customer"
+  },
+  {
+    "_id": "69863a08a03f1a86840a479d",
+    "name": "Diana",
+    "email": "diana.prince@gmail.com",
+    "role": "customer"
+  },
+  {
+    "_id": "69863a22a03f1a86840a47a0",
+    "name": "Ethan",
+    "email": "ethan.hunt@gmail.com",
+    "role": "customer"
+  },
+  {
+    "_id": "69863a45a03f1a86840a47a3",
+    "name": "Fiona",
+    "email": "fiona.gallagher@gmail.com",
+    "role": "customer"
+  },
+  {
+    "_id": "69863a5fa03f1a86840a47a6",
+    "name": "George",
+    "email": "george.costanza@gmail.com",
+    "role": "customer"
+  },
+  {
+    "_id": "69863a79a03f1a86840a47a9",
+    "name": "Hannah",
+    "email": "hannah.baker@gmail.com",
+    "role": "customer"
+  },
+  {
+    "_id": "69863a92a03f1a86840a47ac",
+    "name": "Ian",
+    "email": "ian.mckellen@gmail.com",
+    "role": "customer"
+  },
+  {
+    "_id": "69863ab0a03f1a86840a47af",
+    "name": "Julia",
+    "email": "julia.roberts@gmail.com",
+    "role": "customer"
+  }
+]

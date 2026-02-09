@@ -3,13 +3,14 @@ Vendors
 Vendor 0
 Email : "athults754@gmail.com"
 Password: "TEA804238"
-Category: "Home Appliances"
+Category: "Home Appliances , Furniture"
+ID:"vendor_69831240eace64f7378ad4df"
 created:true
 
 Vendor 1
 Email : "ammini123@gmail.com"
 Password: "TEA804238"
-Category: "Animal Products"
+Category: "Electronics"
 created:true
 
 Vendor 2
@@ -21,32 +22,40 @@ created:true
 Vendor 3
 Email : "alexkinju987@gmail.com"
 Password: "TEA804238"
-Category: "Bags"
+Category: "Children Items"
+ID : "vendor_698638b1a03f1a86840a477c"
+created:true
 
 Vendor 4
 Email : "jiyadikka456@gmail.com"
 Password: "TEA804238"
 Category: "Crockery"
+ID: vendor_698638cfa03f1a86840a477f
+created:true
 
 Vendor 5
 Email : "anugrahrgay99@gmail.com"
 Password: "TEA804238"
-Category: "Children Items"
+Category: "Bags"
+created:true
 
 Vendor 6
 Email : "athultomman999@gmail.com"
 Password: "TEA804238"
-Category: "Laptops"
+Category: "Footwear"
+created:true
 
 Vendor 7
 Email : "aswinachoottan45@gmail.com"
 Password: "TEA804238"
-Category: "Electronics"
+Category: "Beauty Products"
+created:true
 
 Vendor 8
 Email : "najeesvv@gmail.com"
 Password: "TEA804238"
-Category: "Home Appliances"
+Category: "Laptops"
+created:true
 
 Vendor 9
 Email : "snehajosepr678@gmail.com"
@@ -57,7 +66,8 @@ created:true
 Vendor 10
 Email : "afsalaspal876@gmail.com"
 Password: "TEA804238"
-Category: "Footwear"
+Category: "Mobiles"
+created:true
 
 Users
 -----------------------------------

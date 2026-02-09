@@ -29,10 +29,6 @@ const getProducts = asyncHandler(async (req, res) => {
   
   let query = { ...keyword };
 
-  // Logic:
-  // 1. If Admin -> Show All (no isApproved filter)
-  // 2. If Vendor querying their own -> Show All (isApproved check removed for own items)
-  // 3. Everyone else -> isApproved = true
 
   const isAdmin = user && user.role === 'admin';
   const isVendorQueryingOwn = user && req.query.vendorId && req.query.vendorId === `vendor_${user._id}`; // simplified check
@@ -41,14 +37,9 @@ const getProducts = asyncHandler(async (req, res) => {
       // Default to approved only...
       query.isApproved = true;
 
-      // ...Unless matching vendor ID (if implemented strictly)
-      // For now, let's stick to the Admin requirement: Admin sees all.
-      // Vendors usually use a different logic or route, but if they use this one:
       if (req.query.vendorId) {
-           // Allow viewing own products regardless of approval?
-           // The original logic had: if (req.user._id === req.query.vendorId) delete query.isApproved
-           // Let's replicate that if needed, but for now focusing on Admin.
-           if (user && (user._id.toString() === req.query.vendorId || `vendor_${user._id}` === req.query.vendorId)) {
+           
+           if (user && (user._id?.toString() === req.query.vendorId || `vendor_${user._id}` === req.query.vendorId)) {
                delete query.isApproved;
            }
       }
@@ -70,7 +61,7 @@ const getProductById = asyncHandler(async (req, res) => {
   const product = await Product.findById(req.params.id);
 
   if (product) {
-    if (!product.isApproved && (!req.user || (req.user.role !== 'admin' && product.ownerId.toString() !== req.user._id.toString()))) {
+    if (!product.isApproved && (!req.user || (req.user.role !== 'admin' && product.ownerId?.toString() !== req.user._id?.toString()))) {
         res.status(404);
         throw new Error('Product not found');
     }
@@ -89,7 +80,7 @@ const deleteProduct = asyncHandler(async (req, res) => {
 
   if (product) {
     // Check permissions: Admin or Owner
-    if (req.user.role !== 'admin' && product.ownerId.toString() !== req.user._id.toString()) {
+    if (req.user.role !== 'admin' && product.ownerId?.toString() !== req.user._id?.toString()) {
         res.status(401);
         throw new Error('Not authorized to delete this product');
     }
@@ -140,7 +131,7 @@ const updateProduct = asyncHandler(async (req, res) => {
 
   if (product) {
     // Check permissions
-    if (req.user.role !== 'admin' && product.ownerId.toString() !== req.user._id.toString()) {
+    if (req.user.role !== 'admin' && product.ownerId?.toString() !== req.user._id?.toString()) {
         res.status(401);
         throw new Error('Not authorized to update this product');
     }
@@ -175,3 +166,5 @@ module.exports = {
   createProduct,
   updateProduct,
 };
+
+

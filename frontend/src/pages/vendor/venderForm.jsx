@@ -115,6 +115,11 @@ const VendorForm = ({ existingProduct = null, onSuccess, onCancel }) => {
                             <option value="Bags">Bags</option>
                             <option value="Animal Foods">Animal Foods</option>
                             <option value="Beauty Products">Beauty Products</option>
+                            <option value="Laptops">Laptops</option>
+                            <option value="Footwear">Footwear</option>
+                            <option value="Furniture">Furniture</option>
+                            <option value="Mobiles">Mobiles</option>
+                            <option value="Others">Others</option>
                         </select>
                     </div>
                 </div>

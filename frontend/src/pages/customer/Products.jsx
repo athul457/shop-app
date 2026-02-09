@@ -31,13 +31,14 @@ const Products = () => {
   const [selectedVendor, setSelectedVendor] = useState("All");
   const [priceRange, setPriceRange] = useState({ min: 0, max: 100000 });
   const [minRating, setMinRating] = useState(0);
+  const [showAllCategories, setShowAllCategories] = useState(false);
 
   // Get Search Param
   const [searchParams] = useSearchParams();
   const searchQuery = searchParams.get("search")?.toLowerCase() || "";
 
   // Derived Data for Options
-  const categories = ["All", "Electronics", "Fashion", "Home Appliances", "Children Items", "Crockery", "Bags", "Animal Foods", "Beauty Products"];
+  const categories = ["All", "Electronics", "Fashion", "Home Appliances", "Children Items", "Crockery", "Bags", "Animal Foods", "Beauty Products", "Laptops", "Footwear", "Furniture", "Mobiles", "Others"];
   const vendors = ["All", ...new Set(products.map(p => p.vendorId))];
 
   // Filtering Logic
@@ -220,9 +221,9 @@ const Products = () => {
                 </div>
 
                 {/* Category Filter Buttons */}
-                <div className="sticky top-20 z-20 bg-gray-50/95 backdrop-blur py-2 mb-8 -mx-4 px-4 sm:mx-0 sm:px-0 overflow-x-auto no-scrollbar mask-fade">
-                    <div className="flex gap-2 min-w-min pb-2">
-                        {categories.map((category) => (
+                <div className="sticky top-20 z-20 bg-gray-50/95 backdrop-blur py-2 mb-8 -mx-4 px-4 sm:mx-0 sm:px-0">
+                    <div className="flex flex-wrap gap-2 pb-2">
+                        {categories.slice(0, showAllCategories ? categories.length : 7).map((category) => (
                         <button
                             key={category}
                             onClick={() => setSelectedCategory(category)}
@@ -235,6 +236,12 @@ const Products = () => {
                             {category}
                         </button>
                         ))}
+                         <button 
+                            onClick={() => setShowAllCategories(!showAllCategories)}
+                            className="whitespace-nowrap px-5 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 border bg-white text-blue-600 border-blue-200 hover:border-blue-300 hover:bg-blue-50"
+                        >
+                            {showAllCategories ? "Show Less" : "More +"}
+                        </button>
                     </div>
                 </div>
 

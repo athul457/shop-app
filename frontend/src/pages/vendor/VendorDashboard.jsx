@@ -131,8 +131,7 @@ const VendorDashboard = () => {
             setProducts(productData);
 
             // ORDERS (Fetch all, filter for 'Accepted' ones)
-            // Note: Ideally backend should filter, but we are reusing getOrders endpoint
-            // Create Set of Vendor Product IDs for efficient lookup
+            
             const vendorProductIds = new Set(productData.map(p => String(p._id)));
             const orderData = await getAllOrders();
             
@@ -164,8 +163,8 @@ const VendorDashboard = () => {
 
                     acc.push({
                         ...order,
-                        orderItems: vendorItems, // Only show vendor's items
-                        totalPrice: vendorTotal // Override total with vendor's share
+                        orderItems: vendorItems, 
+                        totalPrice: vendorTotal 
                     });
                 } else {
                      console.log(`DEBUG: Order ${order._id} skipped because NO Vendor Items`);

@@ -376,7 +376,7 @@ const products = [
     "category": "Crockery",
     "stock": 15,
     "image_url": "https://images.pexels.com/photos/6103654/pexels-photo-6103654.jpeg?auto=compress&cs=tinysrgb&w=600",
-    "vendorId": "vendor_002",
+    "vendorId": "vendor_698638cfa03f1a86840a477f",
     "isApproved": true,
     "rating": 4.7
   },
@@ -788,7 +788,7 @@ const products = [
     "isApproved": true,
     "rating": 4.8
   },
-  [
+  
   {
     "id": 101,
     "name": "Wireless Bluetooth Headphones",
@@ -909,7 +909,7 @@ const products = [
     "isApproved": true,
     "rating": 4.3
   }
-]
+
 
 ]
 

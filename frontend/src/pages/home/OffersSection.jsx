@@ -1,20 +1,10 @@
-import { useState, useEffect } from "react";
-
-const OffersSection = () => {
-  const [coupons, setCoupons] = useState([]);
-  
-  useEffect(() => {
-    const allOffers = JSON.parse(localStorage.getItem('mockVendorOffers') || '[]');
-    const activeOffers = allOffers.filter(o => o.status === 'ACTIVE' && new Date(o.validUntil) >= new Date().setHours(0,0,0,0));
-    setCoupons(activeOffers);
-  }, []);
+const OffersSection = ({ offers }) => {
+  if (!offers || offers.length === 0) return null;
 
   const copyCode = (code) => {
     navigator.clipboard.writeText(code);
     alert(`Coupon ${code} copied!`);
   };
-
-  if (coupons.length === 0) return null;
 
   return (
     <section className="max-w-7xl mx-auto px-4 mb-16">
@@ -24,8 +14,8 @@ const OffersSection = () => {
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {coupons.map((offer) => (
-          <div key={offer.id} className="bg-white border border-dashed border-red-200 rounded-xl p-5 flex justify-between items-center shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group">
+        {offers.map((offer, idx) => (
+          <div key={idx} className="bg-white border border-dashed border-red-200 rounded-xl p-5 flex justify-between items-center shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group">
             <div className="absolute right-0 top-0 w-24 h-24 bg-red-50 rounded-bl-full -mr-4 -mt-4 z-0"></div>
             
             <div className="relative z-10">

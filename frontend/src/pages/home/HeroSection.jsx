@@ -2,60 +2,27 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 
-const HeroSection = () => {
+const HeroSection = ({ slides }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
 
-  const slides = [
-    {
-      id: 1,
-      title: "Summer Collection",
-      desc: "Discover the hottest trends for the season. Flat 50% Off on all new arrivals.",
-      bg: "bg-gradient-to-r from-blue-600 to-blue-800",
-      image: "https://images.pexels.com/photos/994234/pexels-photo-994234.jpeg?auto=compress&cs=tinysrgb&w=800"
-    },
-    {
-      id: 2,
-      title: "Next-Gen Electronics",
-      desc: "Upgrade your life with the latest gadgets. Smart technology for a smarter you.",
-      bg: "bg-gradient-to-r from-emerald-600 to-teal-800",
-      image: "https://images.pexels.com/photos/356056/pexels-photo-356056.jpeg?auto=compress&cs=tinysrgb&w=800"
-    },
-    {
-      id: 3,
-      title: "Modern Home Living",
-      desc: "Transform your space with our premium furniture and decor collection.",
-      bg: "bg-gradient-to-r from-purple-600 to-indigo-800",
-      image: "https://images.pexels.com/photos/1350789/pexels-photo-1350789.jpeg?auto=compress&cs=tinysrgb&w=800"
-    },
-    {
-      id: 4,
-      title: "Exclusive Accessories",
-      desc: "Complete your look with our curated collection of luxury watches and leather goods.",
-      bg: "bg-gradient-to-r from-rose-500 to-pink-700",
-      image: "https://images.pexels.com/photos/190819/pexels-photo-190819.jpeg?auto=compress&cs=tinysrgb&w=800"
-    },
-    {
-      id: 5,
-      title: "Active Performance",
-      desc: "Reach your fitness goals with professional-grade sports equipment and apparel.",
-      bg: "bg-gradient-to-r from-orange-500 to-amber-600",
-      image: "https://images.pexels.com/photos/1552242/pexels-photo-1552242.jpeg?auto=compress&cs=tinysrgb&w=800"
-    }
-  ];
-
   useEffect(() => {
+    if (!slides || slides.length === 0) return;
     const interval = setInterval(() => {
       setCurrentSlide((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
     }, 5000);
     return () => clearInterval(interval);
-  }, [slides.length]);
+  }, [slides]);
+
+  if (!slides || slides.length === 0) {
+      return null; 
+  }
 
   return (
     <div className="relative w-full h-[500px] md:h-[600px] overflow-hidden">
       {slides.map((slide, index) => (
         <div 
-          key={slide.id}
-          className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${currentSlide === index ? 'opacity-100' : 'opacity-0'} ${slide.bg}`}
+          key={index} // Use index if no id, or map backend _id
+          className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${currentSlide === index ? 'opacity-100' : 'opacity-0'} ${slide.bg || 'bg-gray-800'}`}
         >
           {/* Overlay Pattern */}
           <div className="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>

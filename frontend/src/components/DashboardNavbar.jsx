@@ -2,7 +2,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useState, useRef, useEffect } from 'react';
 import useAuth from '../hooks/useAuth';
 import { useCart } from '../context/CartContext';
-import { ShoppingCart, User, Search, LogOut, Package, MapPin, Heart, Settings, ShoppingBag, Users, Bell, ChevronDown, Store, X, CheckCircle2, Clock } from 'lucide-react';
+import { ShoppingCart, User, Search, LogOut, Package, MapPin, Heart, Settings, ShoppingBag, Users, Bell, ChevronDown, Store, X, CheckCircle2, Clock, LayoutTemplate, HelpCircle, FileQuestion } from 'lucide-react';
 
 const DashboardNavbar = () => {
   const { user, logout } = useAuth();
@@ -109,6 +109,9 @@ const DashboardNavbar = () => {
                 </Link>
                 <Link to="/admin/vendors" className="px-4 py-2 rounded-full text-sm font-medium text-gray-600 hover:bg-white hover:text-blue-600 hover:shadow-sm transition-all flex items-center gap-2">
                     <Store size={18} /> Vendors
+                </Link>
+                <Link to="/admin/home" className="px-4 py-2 rounded-full text-sm font-medium text-gray-600 hover:bg-white hover:text-blue-600 hover:shadow-sm transition-all flex items-center gap-2">
+                    <LayoutTemplate size={18} /> Home Page
                 </Link>
             </div>
           ) : (
@@ -291,6 +294,13 @@ const DashboardNavbar = () => {
                         <Link to="/dashboard/wishlist" className="block px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-xl transition-colors flex items-center gap-3" onClick={() => setIsDropdownOpen(false)}>
                             <Heart size={18} className="text-gray-400" /> Wishlist
                         </Link>
+                        <Link to="/help" className="block px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-xl transition-colors flex items-center gap-3" onClick={() => setIsDropdownOpen(false)}>
+                            <HelpCircle size={18} className="text-gray-400" /> Help Center
+                        </Link>
+                        <Link to="/faq" className="block px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-xl transition-colors flex items-center gap-3" onClick={() => setIsDropdownOpen(false)}>
+                            <FileQuestion size={18} className="text-gray-400" /> FAQ
+                        </Link>
+                      
                         
                         {user?.role === 'customer' && (
                            <button 

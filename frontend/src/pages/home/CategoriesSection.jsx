@@ -1,14 +1,8 @@
 import { Link } from "react-router-dom";
-import { Zap, Gift, ShoppingCart, Laptop, Star } from "lucide-react";
+import DynamicIcon from "../../components/DynamicIcon";
 
-const CategoriesSection = () => {
-  const categories = [
-    { name: "Electronics", color: "bg-blue-100 text-blue-600", icon: <Zap /> },
-    { name: "Fashion", color: "bg-pink-100 text-pink-600", icon: <Gift /> },
-    { name: "Home & Living", color: "bg-orange-100 text-orange-600", icon: <ShoppingCart /> },
-    { name: "Laptops", color: "bg-yellow-100 text-yellow-600", icon: <Laptop /> },
-    { name: "Beauty", color: "bg-purple-100 text-purple-600", icon: <Star /> },
-  ];
+const CategoriesSection = ({ categories }) => {
+  if (!categories || categories.length === 0) return null;
 
   return (
     <section className="max-w-7xl mx-auto px-4 mb-20">
@@ -20,7 +14,7 @@ const CategoriesSection = () => {
         {categories.map((cat, idx) => (
           <div key={idx} className={`${cat.color} p-8 rounded-2xl flex flex-col items-center justify-center gap-4 cursor-pointer hover:scale-105 transition-transform duration-300 shadow-sm border border-transparent hover:border-current hover:shadow-md h-48`}>
             <div className="p-4 bg-white rounded-full shadow-sm text-inherit">
-              {cat.icon}
+               <DynamicIcon name={cat.icon} />
             </div>
             <span className="font-bold text-lg">{cat.name}</span>
           </div>

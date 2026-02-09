@@ -27,6 +27,13 @@ import AdminUsers from './pages/admin/AdminUsers';
 import AdminOrders from './pages/admin/AdminOrders';
 import AdminVendors from './pages/admin/AdminVendors';
 import AdminCoupons from './pages/admin/AdminCoupons';
+import AdminHomePage from './pages/admin/AdminHomePage';
+
+import HelpCenter from './pages/support/HelpCenter';
+import Terms from './pages/support/Terms';
+import Privacy from './pages/support/Privacy';
+import Returns from './pages/support/Returns';
+import FAQ from './pages/support/FAQ';
 
 function App() {
   return (
@@ -42,6 +49,11 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/login/admin" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/help" element={<HelpCenter />} />
+          <Route path="/terms" element={<Terms />} />
+          <Route path="/privacy" element={<Privacy />} />
+          <Route path="/returns" element={<Returns />} />
+          <Route path="/faq" element={<FAQ />} />
         </Route>
 
         {/* Protected Routes */}
@@ -68,6 +80,7 @@ function App() {
            <Route path="orders" element={<AdminOrders />} />
            <Route path="vendors" element={<AdminVendors />} />
            <Route path="coupons" element={<AdminCoupons />} />
+           <Route path="home" element={<AdminHomePage />} />
         </Route>
       </Routes>
       </WishlistProvider>

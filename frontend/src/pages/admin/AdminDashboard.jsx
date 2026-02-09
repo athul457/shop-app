@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Package, Users, ShoppingBag, Loader, ArrowRight, Store, Ticket } from 'lucide-react';
+import { Package, Users, ShoppingBag, Loader, ArrowRight, Store, Ticket, LayoutTemplate } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import useAuth from '../../hooks/useAuth';
@@ -131,6 +131,16 @@ const AdminDashboard = () => {
                     <div>
                         <h2 className="text-xl font-bold text-gray-800">Vendors</h2>
                         <p className="text-gray-500">Applications: {vendorRequests.filter(r => r.status === 'pending').length}</p>
+                    </div>
+                </Link>
+
+                <Link to="/admin/home" className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow flex items-center gap-4 group">
+                    <div className="p-4 bg-indigo-100 text-indigo-600 rounded-lg group-hover:bg-indigo-600 group-hover:text-white transition-colors">
+                        <li className="list-none"><LayoutTemplate size={32} /></li>
+                    </div>
+                    <div>
+                        <h2 className="text-xl font-bold text-gray-800">Home Page</h2>
+                        <p className="text-gray-500">Edit Content</p>
                     </div>
                 </Link>
             </div>

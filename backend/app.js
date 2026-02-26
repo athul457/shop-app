@@ -4,9 +4,10 @@ const morgan = require("morgan");
 const cors = require("cors");
 
 app.use(cors({
-  // origin: 'http://localhost:5173',
-  // origin: 'https://shop-app-beta-sable.vercel.app',
-  origin:"https://shop-app-two-olive.vercel.app",
+  origin: [
+    'http://localhost:5173', 
+    'https://shop-app-two-olive.vercel.app'
+  ],
   credentials: true
 }));
 app.use(morgan("dev"));

@@ -10,6 +10,7 @@ import PublicLayout from './layouts/PublicLayout';
 import Profile from './pages/customer/Profile';
 import Products from './pages/customer/Products';
 import ProductDetails from './pages/customer/ProductDetails';
+import ShopProfile from './pages/customer/ShopProfile';
 import Orders from './pages/customer/Orders';
 import Addresses from './pages/customer/Addresses';
 import Wishlist from './pages/customer/Wishlist';
@@ -67,6 +68,11 @@ function App() {
            <Route path="cart" element={<Cart />} />
            <Route path="checkout" element={<Checkout />} />
            <Route path="payment" element={<Payment />} />
+        </Route>
+        
+        {/* Shop Profile Route - Using Dashboard Layout but with absolute path */}
+        <Route path="/shop/:id" element={<DashboardLayout role="customer" />}>
+            <Route index element={<ShopProfile />} />
         </Route>
         
         <Route path="/vendor" element={<DashboardLayout role="vendor" />}>

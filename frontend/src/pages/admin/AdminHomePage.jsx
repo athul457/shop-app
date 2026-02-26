@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Save, Plus, Trash2, LayoutTemplate, Image, Tag, Grid, ShoppingBag, Megaphone, Percent, CheckCircle } from 'lucide-react';
+import { Save, Plus, Trash2, LayoutTemplate, Image, Tag, Grid, ShoppingBag, Megaphone, Percent, CheckCircle, GalleryHorizontalEnd } from 'lucide-react';
 import DynamicIcon from '../../components/DynamicIcon';
 
 const AdminHomePage = () => {
@@ -71,6 +71,7 @@ const AdminHomePage = () => {
 
     const tabs = [
         { id: 'hero', label: 'Hero Slides', icon: <Image size={20} />, desc: 'Manage main carousel' },
+        { id: 'product-banners', label: 'Product Banners', icon: <GalleryHorizontalEnd size={20} />, desc: 'Carousel cards on products page' },
         { id: 'features', label: 'Features', icon: <LayoutTemplate size={20} />, desc: 'Service highlights' },
         { id: 'categories', label: 'Categories', icon: <Grid size={20} />, desc: 'Homepage grid' },
         { id: 'offers', label: 'Offers', icon: <Percent size={20} />, desc: 'Coupons & deals' },
@@ -202,6 +203,100 @@ const AdminHomePage = () => {
                                                         />
                                                     </div>
                                                 </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+
+                    {activeTab === 'product-banners' && (
+                        <div>
+                             <div className="flex justify-between items-center mb-8 border-b border-gray-100 pb-6">
+                                <div>
+                                    <h2 className="text-2xl font-bold text-gray-900">Product Banners</h2>
+                                    <p className="text-gray-500 text-sm">Manage the scrolling cards shown on the Products page.</p>
+                                </div>
+                                <button 
+                                    onClick={() => handleAddArrayItem('productBanners', { title: 'New Banner', discount: '10% OFF', bg: 'bg-blue-100', image: '', buttonText: 'Shop Now' })}
+                                    className="text-sm bg-blue-50 text-blue-700 font-bold px-4 py-2 rounded-lg hover:bg-blue-100 flex items-center gap-2 transition-colors border border-blue-100"
+                                >
+                                    <Plus size={18} /> Add Banner
+                                </button>
+                            </div>
+                            
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                {(config.productBanners || []).map((banner, index) => (
+                                    <div key={index} className="border border-gray-200 rounded-xl p-6 bg-white hover:shadow-md transition-all group relative">
+                                        
+                                        <button 
+                                            onClick={() => handleRemoveArrayItem('productBanners', index)}
+                                            className="absolute top-4 right-4 text-red-400 hover:text-red-600 bg-white p-1.5 rounded-lg shadow-sm border border-gray-200 hover:border-red-200 transition-colors z-10"
+                                            title="Remove Banner"
+                                        >
+                                            <Trash2 size={16} />
+                                        </button>
+
+                                        <div className="flex gap-4 mb-4">
+                                            <div className="w-20 h-20 bg-gray-100 rounded-lg overflow-hidden shrink-0 border border-gray-200">
+                                                {banner.image ? (
+                                                     <img src={banner.image} alt="Preview" className="w-full h-full object-cover" />
+                                                ) : (
+                                                    <div className="w-full h-full flex items-center justify-center text-gray-300">
+                                                        <Image size={24} />
+                                                    </div>
+                                                )}
+                                            </div>
+                                            <div className="flex-1 space-y-2">
+                                                <div>
+                                                    <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-wide mb-1">Title</label>
+                                                    <input 
+                                                        value={banner.title} 
+                                                        onChange={e => handleArrayChange('productBanners', index, 'title', e.target.value)}
+                                                        className="w-full border-b border-gray-200 py-1 focus:border-blue-500 outline-none font-bold text-gray-800 text-sm"
+                                                        placeholder="Title"
+                                                    />
+                                                </div>
+                                                <div>
+                                                    <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-wide mb-1">Discount Text</label>
+                                                     <input 
+                                                        value={banner.discount} 
+                                                        onChange={e => handleArrayChange('productBanners', index, 'discount', e.target.value)}
+                                                        className="w-full border-b border-gray-200 py-1 focus:border-blue-500 outline-none text-red-500 font-bold text-xs"
+                                                        placeholder="50% OFF"
+                                                    />
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div className="grid grid-cols-2 gap-4">
+                                             <div className="col-span-2">
+                                                <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-wide mb-1">Image URL</label>
+                                                <input 
+                                                    value={banner.image} 
+                                                    onChange={e => handleArrayChange('productBanners', index, 'image', e.target.value)}
+                                                    className="w-full border border-gray-200 rounded p-2 text-xs text-gray-600 focus:border-blue-500 outline-none bg-gray-50"
+                                                    placeholder="https://..."
+                                                />
+                                            </div>
+                                            <div>
+                                                <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-wide mb-1">Button Text</label>
+                                                <input 
+                                                    value={banner.buttonText} 
+                                                    onChange={e => handleArrayChange('productBanners', index, 'buttonText', e.target.value)}
+                                                    className="w-full border border-gray-200 rounded p-2 text-xs text-gray-800 focus:border-blue-500 outline-none"
+                                                    placeholder="Shop Now"
+                                                />
+                                            </div>
+                                            <div>
+                                                <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-wide mb-1">BG Class</label>
+                                                <input 
+                                                    value={banner.bg} 
+                                                    onChange={e => handleArrayChange('productBanners', index, 'bg', e.target.value)}
+                                                    className="w-full border border-gray-200 rounded p-2 text-xs text-blue-600 focus:border-blue-500 outline-none font-mono"
+                                                    placeholder="bg-blue-100"
+                                                />
                                             </div>
                                         </div>
                                     </div>

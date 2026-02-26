@@ -11,7 +11,7 @@ const DashboardLayout = ({ role }) => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
+    <div className={`min-h-screen flex flex-col ${role === 'customer' ? 'bg-yellow-50' : 'bg-gray-50'}`}>
        {/* Top Navbar */}
        {role === 'vendor' ? <VendorNavbar /> : <DashboardNavbar />}
 

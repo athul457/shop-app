@@ -1,10 +1,10 @@
 import { useRef, useEffect } from 'react';
 import { ArrowRight } from 'lucide-react';
 
-const PromotionalBanner = () => {
+const PromotionalBanner = ({ banners }) => {
   const scrollRef = useRef(null);
 
-  const promos = [
+  const defaultPromos = [
     {
       id: 1,
       title: "Children's Items",
@@ -48,6 +48,8 @@ const PromotionalBanner = () => {
       image: "https://images.pexels.com/photos/27175967/pexels-photo-27175967.jpeg?auto=compress&cs=tinysrgb&w=600"
     }
   ];
+
+  const promos = (banners && banners.length > 0) ? banners : defaultPromos;
 
   // Auto-scroll logic
   useEffect(() => {
@@ -99,7 +101,7 @@ const PromotionalBanner = () => {
                    </span>
                    <h3 className="text-xl font-bold leading-tight">{promo.title}</h3>
                    <div className="flex items-center gap-1 text-sm font-medium mt-1 opacity-0 group-hover:opacity-100 transition-opacity transform translate-y-2 group-hover:translate-y-0">
-                      Shop Now <ArrowRight size={14} />
+                      {promo.buttonText || "Shop Now"} <ArrowRight size={14} />
                    </div>
                 </div>
              </div>

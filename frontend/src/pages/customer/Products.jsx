@@ -10,13 +10,19 @@ const Products = () => {
     const [loading, setLoading] = useState(true);
     const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
     
+    const [headerConfig, setHeaderConfig] = useState(null);
+
     useEffect(() => {
         const load = async () => {
             try {
-                const data = await fetchProducts();
-                setProducts(data);
+                const [productData, homeConfig] = await Promise.all([
+                    fetchProducts(),
+                    fetch('/api/home').then(res => res.json())
+                ]);
+                setProducts(productData);
+                setHeaderConfig(homeConfig);
             } catch (error) {
-                console.error("Failed to load products");
+                console.error("Failed to load data", error);
             } finally {
                 setLoading(false);
             }
@@ -81,7 +87,7 @@ const Products = () => {
     <div className="pb-12">
         {/* Section 1: Promotional Banner (Sliding Cards) */}
         <div className="mb-10">
-            <PromotionalBanner />
+            <PromotionalBanner banners={headerConfig?.productBanners} />
         </div>
 
         {/* Section 2: Products and Filter Layout */}
@@ -262,7 +268,7 @@ const Products = () => {
                 ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                     {filteredProducts.map((product) => (
-                    <div key={product._id} className="group bg-white rounded-2xl shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)] hover:shadow-[0_8px_25px_-5px_rgba(0,0,0,0.1),0_10px_10px_-5px_rgba(0,0,0,0.04)] border border-gray-100 overflow-hidden transition-all duration-300 hover:-translate-y-1 flex flex-col h-full relative">
+                    <div key={product._id} className="group bg-white rounded-3xl shadow-md hover:shadow-xl border border-gray-100 overflow-hidden transition-all duration-300 hover:-translate-y-1 flex flex-col h-full relative">
                         
                         {/* Wishlist Button */}
                         <button 
@@ -270,19 +276,19 @@ const Products = () => {
                                 e.preventDefault();
                                 toggleWishlist(product);
                             }}
-                            className={`absolute top-3 right-3 z-10 p-2.5 rounded-full backdrop-blur-md transition-all duration-300 shadow-sm ${
+                            className={`absolute top-4 right-4 z-10 p-2.5 rounded-full backdrop-blur-md transition-all duration-300 shadow-sm ${
                                 isInWishlist(product._id) 
-                                ? 'bg-white text-red-500 scale-110 shadow-md' 
-                                : 'bg-white/80 text-gray-400 hover:bg-white hover:text-red-500'
+                                ? 'bg-white text-red-500 scale-110 shadow-md ring-2 ring-red-50' 
+                                : 'bg-white/90 text-gray-400 hover:bg-white hover:text-red-500 hover:shadow-md'
                             }`}
                         >
-                            <Heart size={18} fill={isInWishlist(product._id) ? "currentColor" : "none"} />
+                            <Heart size={20} fill={isInWishlist(product._id) ? "currentColor" : "none"} />
                         </button>
 
                         {/* Image */}
                         <div 
                             onClick={() => navigate(`/dashboard/product/${product._id}`)}
-                            className="relative cursor-pointer h-56 overflow-hidden bg-gray-100"
+                            className="relative cursor-pointer h-64 overflow-hidden bg-gray-50 group-hover:opacity-95 transition-opacity"
                         >
                         <img 
                             src={product.image} 
@@ -293,38 +299,41 @@ const Products = () => {
                         
                         {/* Stock Badge */}
                         {product.stock === 0 && (
-                            <div className="absolute inset-0 bg-white/60 backdrop-blur-[1px] flex items-center justify-center">
-                                <span className="bg-red-500 text-white px-3 py-1 text-xs font-bold uppercase rounded-md shadow-sm transform -rotate-2">Out of Stock</span>
+                            <div className="absolute inset-0 bg-white/60 backdrop-blur-[2px] flex items-center justify-center z-20">
+                                <span className="bg-red-500 text-white px-4 py-1.5 text-sm font-bold uppercase rounded-full shadow-lg transform -rotate-3 border border-white">Out of Stock</span>
                             </div>
                         )}
                         
                         {/* Rating Badge */}
-                        <div className="absolute bottom-3 left-3 bg-white/90 backdrop-blur px-2 py-1 rounded-lg flex items-center gap-1 shadow-sm text-xs font-bold text-gray-700">
-                            <Star size={12} className="text-yellow-400 fill-yellow-400" /> {product.rating}
+                        <div className="absolute bottom-3 left-3 bg-white/95 backdrop-blur px-2.5 py-1.5 rounded-lg flex items-center gap-1.5 shadow-sm text-xs font-bold text-gray-700 border border-gray-100">
+                            <Star size={14} className="text-yellow-400 fill-yellow-400" /> {product.rating}
                         </div>
                         </div>
                         
                         {/* Content */}
                         <div className="p-5 flex flex-col flex-1">
-                        <div className="mb-3">
-                            <span className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded-md uppercase tracking-wider">{product.category}</span>
+                        <div className="mb-2 flex justify-between items-start">
+                             <span className="text-[10px] font-extrabold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-full uppercase tracking-wider">{product.category}</span>
+                             <span className="text-[10px] text-gray-400 font-medium truncate max-w-[100px]">{product.vendorId}</span>
                         </div>
                         
                         <h3 
                                 onClick={() => navigate(`/dashboard/product/${product._id}`)}
-                                className="font-bold text-gray-900 text-lg mb-1 leading-tight group-hover:text-blue-600 transition-colors cursor-pointer line-clamp-1" 
+                                className="font-bold text-gray-900 text-lg mb-2 leading-snug group-hover:text-blue-600 transition-colors cursor-pointer line-clamp-2 min-h-[3.5rem]" 
                                 title={product.name}
                         >
                             {product.name}
                         </h3>
-                        <p className="text-xs text-gray-500 mb-3">Sold by {product.vendorId}</p>
                         
-                        <p className="text-gray-500 text-sm mb-4 line-clamp-2 leading-relaxed flex-1">{product.description}</p>
+                        {/* Shorter description or just hide on card to clean up UI? Let's keep visually short */}
+                        <p className="text-gray-500 text-sm mb-4 line-clamp-2 leading-relaxed">{product.description}</p>
                         
-                        <div className="pt-4 border-t border-gray-50 flex items-center justify-between mt-auto">
-                            <div>
-                                <span className="block text-xs text-gray-400 line-through">${(product.price * 1.2).toFixed(2)}</span>
-                                <span className="text-xl font-extrabold text-gray-900">${product.price}</span>
+                        <div className="pt-4 mt-auto flex items-center justify-between border-t border-gray-50">
+                            <div className="flex flex-col">
+                                <span className="text-xs text-gray-400 line-through font-medium">${(product.price * 1.2).toFixed(2)}</span>
+                                <div className="flex items-baseline gap-1">
+                                    <span className="text-2xl font-black text-gray-900 tracking-tight">${product.price}</span>
+                                </div>
                             </div>
                             
                             <button 
@@ -333,9 +342,11 @@ const Products = () => {
                                     e.stopPropagation();
                                     navigate(`/dashboard/product/${product._id}`);
                                 }}
-                                className="flex items-center gap-2 px-4 py-2.5 bg-gray-900 text-white rounded-xl hover:bg-gray-800 transition-all font-bold text-sm shadow-lg shadow-gray-200 active:scale-95 disabled:bg-gray-300 disabled:shadow-none disabled:cursor-not-allowed group/btn"
+                                className="flex items-center gap-2 px-5 py-2.5 bg-gray-900 text-white rounded-full hover:bg-black transition-all font-bold text-sm shadow-lg shadow-gray-200 active:scale-95 active:shadow-none disabled:bg-gray-300 disabled:shadow-none disabled:cursor-not-allowed group/btn hover:ring-4 hover:ring-gray-100"
                             >
-                                <ShoppingCart size={16} className="group-hover/btn:animate-bounce" /> Buy Now
+                                <ShoppingCart size={18} className="group-hover/btn:animate-bounce" /> 
+                                <span className="hidden sm:inline">Check Out</span>
+                                <span className="sm:hidden">Buy</span>
                             </button>
                         </div>
                         </div>

@@ -1,27 +1,60 @@
-import { useState } from 'react';
-import { CheckCircle2, Store, Save, X, MapPin, Phone, Globe, Image as ImageIcon, Star, Mail, User } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { CheckCircle2, Store, Save, X, MapPin, Phone, Globe, Image as ImageIcon, Star, Mail, User, Plus, Trash2, Users } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { saveStoreProfile } from '../../../api/store.api'; // Import API
 
-const VendorProfile = ({ request, user, onProfileUpdate }) => {
+const VendorProfile = ({ store, user, products = [], onProfileUpdate }) => {
     const [isEditing, setIsEditing] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
 
-    // Consolidated Form State
-    const [formData, setFormData] = useState({
-        storeName: request.storeName || '',
-        description: request.description || '',
-        phone: request.phone || '',
-        address: request.address || '',
-        logo: request.logo || '', // URL
-        banner: request.banner || '' // URL
-    });
+    // Initial state from store prop or empty defaults
+    // If store is null (first time), we show empty fields
+    const initialData = {
+        storeName: store?.storeName || user.name + "'s Store",
+        description: store?.description || '',
+        phone: store?.phone || '',
+        address: store?.address || '',
+        logo: store?.logo || '', 
+        banner: store?.banner || '', 
+        featuredProducts: store?.featuredProducts?.map(p => typeof p === 'object' ? p._id : p) || [] // Ensure we have IDs
+    };
+
+    const [formData, setFormData] = useState(initialData);
+
+    // Update form data when store prop changes (e.g. after fetch)
+    useEffect(() => {
+        setFormData({
+            storeName: store?.storeName || user.name + "'s Store",
+            description: store?.description || '',
+            phone: store?.phone || '',
+            address: store?.address || '',
+            logo: store?.logo || '', 
+            banner: store?.banner || '', 
+            featuredProducts: store?.featuredProducts?.map(p => typeof p === 'object' ? p._id : p) || []
+        });
+    }, [store, user]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
     };
 
-    const handleSave = () => {
+    const toggleFeaturedProduct = (productId) => {
+        setFormData(prev => {
+            const current = prev.featuredProducts || [];
+            if (current.includes(productId)) {
+                return { ...prev, featuredProducts: current.filter(id => id !== productId) };
+            } else {
+                if (current.length >= 4) {
+                    toast.error("You can highlight up to 4 products only");
+                    return prev;
+                }
+                return { ...prev, featuredProducts: [...current, productId] };
+            }
+        });
+    };
+
+    const handleSave = async () => {
         if (!formData.storeName.trim()) {
             toast.error("Store name cannot be empty");
             return;
@@ -29,19 +62,11 @@ const VendorProfile = ({ request, user, onProfileUpdate }) => {
 
         setIsSaving(true);
         try {
-            const requests = JSON.parse(localStorage.getItem('mockVendorRequests') || '[]');
-            
-            const updatedRequests = requests.map(req => {
-                if (req.user.email === user.email) {
-                    return { ...req, ...formData }; 
-                }
-                return req;
-            });
-
-            localStorage.setItem('mockVendorRequests', JSON.stringify(updatedRequests));
+            // Call API instead of localStorage
+            await saveStoreProfile(formData);
 
             if (onProfileUpdate) {
-                onProfileUpdate();
+                onProfileUpdate(); // Refresh parent data
             }
 
             setIsEditing(false);
@@ -49,23 +74,23 @@ const VendorProfile = ({ request, user, onProfileUpdate }) => {
 
         } catch (error) {
             console.error("Failed to update profile", error);
-            toast.error("Failed to update profile");
+            // Show backend error message if available
+            const msg = error.response?.data?.message || "Failed to update profile";
+            toast.error(msg);
         } finally {
             setIsSaving(false);
         }
     };
 
     const handleCancel = () => {
-        setFormData({
-            storeName: request.storeName || '',
-            description: request.description || '',
-            phone: request.phone || '',
-            address: request.address || '',
-            logo: request.logo || '',
-            banner: request.banner || ''
-        });
+        setFormData(initialData);
         setIsEditing(false);
     };
+
+    // Get actual product objects for the selected IDs
+    const featuredProductDetails = (formData.featuredProducts || [])
+        .map(id => products.find(p => p._id === id))
+        .filter(Boolean); 
 
     return (
         <div className="max-w-4xl mx-auto space-y-8 animate-fade-in-up">
@@ -86,6 +111,19 @@ const VendorProfile = ({ request, user, onProfileUpdate }) => {
                     </button>
                 )}
             </div>
+
+            {/* Followers Count - Added as requested */}
+            {store && (
+                <div className="bg-gradient-to-r from-indigo-500 to-purple-600 rounded-2xl p-6 text-white shadow-lg flex items-center justify-between">
+                    <div>
+                        <p className="text-indigo-100 font-medium mb-1">Total Followers</p>
+                        <h3 className="text-4xl font-bold">{store.followers?.length || 0}</h3>
+                    </div>
+                    <div className="bg-white/20 p-4 rounded-xl backdrop-blur-sm">
+                        <Users size={32} className="text-white" />
+                    </div>
+                </div>
+            )}
 
             {/* Main Interactive Card */}
             <div className="bg-white rounded-3xl border border-gray-100 shadow-xl shadow-blue-900/5 overflow-hidden ring-1 ring-gray-100">
@@ -210,12 +248,67 @@ const VendorProfile = ({ request, user, onProfileUpdate }) => {
                                     <p className="text-gray-600 leading-relaxed text-sm">
                                         {formData.description || (
                                             <span className="italic text-gray-400 flex items-center gap-2">
-                                                <Store size={16} /> No description provided yet. Editing your profile adds trust!
+                                                <Store size={16} /> No description provided yet.
                                             </span>
                                         )}
                                     </p>
                                 )}
                             </div>
+                            
+                            {/* Featured Products Selection (Edit Mode Only) */}
+                            {isEditing && (
+                                <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm animate-fade-in">
+                                    <div className="flex justify-between items-center mb-4">
+                                        <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wide flex items-center gap-2">
+                                            <Star size={16} className="text-yellow-500"/> Select Featured Products
+                                        </h3>
+                                        <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">
+                                            {formData.featuredProducts.length} / 4 Selected
+                                        </span>
+                                    </div>
+                                    
+                                    {products.length === 0 ? (
+                                        <div className="text-center py-8 text-gray-400 text-sm">
+                                            No products available. Add products to your inventory first.
+                                        </div>
+                                    ) : (
+                                        <div className="grid grid-cols-2 md:grid-cols-3 gap-3 max-h-60 overflow-y-auto p-1 custom-scrollbar">
+                                            {products.map(product => {
+                                                const isSelected = formData.featuredProducts.includes(product._id);
+                                                return (
+                                                    <div 
+                                                        key={product._id}
+                                                        onClick={() => toggleFeaturedProduct(product._id)}
+                                                        className={`
+                                                            cursor-pointer relative rounded-xl border-2 overflow-hidden transition-all group
+                                                            ${isSelected 
+                                                                ? 'border-blue-500 ring-2 ring-blue-100' 
+                                                                : 'border-gray-100 hover:border-gray-300'}
+                                                        `}
+                                                    >
+                                                        <div className="aspect-square bg-gray-100 relative">
+                                                            {product.image && (
+                                                                <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
+                                                            )}
+                                                            {isSelected && (
+                                                                <div className="absolute inset-0 bg-blue-500/20 flex items-center justify-center">
+                                                                    <div className="bg-blue-500 text-white p-1 rounded-full shadow-lg transform scale-100 transition-transform">
+                                                                        <CheckCircle2 size={20} fill="currentColor" className="text-white"/>
+                                                                    </div>
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                        <div className="p-2 text-xs truncate font-medium text-gray-700 bg-white">
+                                                            {product.name}
+                                                        </div>
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
+                                    )}
+                                </div>
+                            )}
+
                         </div>
 
                         {/* Sidebar: Contact Info */}
@@ -364,15 +457,35 @@ const VendorProfile = ({ request, user, onProfileUpdate }) => {
                              <div className="mt-8 border-t border-gray-100 pt-6">
                                  <h5 className="font-bold text-sm text-gray-900 mb-4">Featured Products</h5>
                                  <div className="grid grid-cols-4 gap-4">
-                                     {[1,2,3,4].map((item) => (
-                                         <div key={item} className="aspect-[3/4] bg-gray-50 rounded-lg border border-gray-100 flex items-center justify-center">
-                                             <div className="text-center p-4">
-                                                 <div className="w-12 h-12 bg-gray-200 rounded-full mx-auto mb-2"></div>
-                                                 <div className="h-2 w-16 bg-gray-200 rounded mx-auto mb-1"></div>
-                                                 <div className="h-2 w-10 bg-gray-200 rounded mx-auto"></div>
+                                     {featuredProductDetails.length > 0 ? (
+                                         featuredProductDetails.map((product) => (
+                                             <div key={product._id} className="aspect-[3/4] bg-white rounded-lg border border-gray-100 flex flex-col items-start overflow-hidden">
+                                                 <div className="w-full aspect-square bg-gray-50 relative">
+                                                     {product.image ? (
+                                                         <img src={product.image} className="w-full h-full object-cover"/>
+                                                     ) : (
+                                                         <div className="w-full h-full flex items-center justify-center text-gray-300">
+                                                             <ImageIcon size={20} />
+                                                         </div>
+                                                     )}
+                                                 </div>
+                                                 <div className="p-3 w-full">
+                                                    <div className="font-medium text-xs text-gray-900 truncate mb-1">{product.name}</div>
+                                                    <div className="font-bold text-xs text-gray-900">${product.price}</div>
+                                                 </div>
                                              </div>
-                                         </div>
-                                     ))}
+                                         ))
+                                     ) : (
+                                        [1,2,3,4].map((item) => (
+                                            <div key={item} className="aspect-[3/4] bg-gray-50 rounded-lg border border-gray-100 flex items-center justify-center">
+                                                <div className="text-center p-4">
+                                                    <div className="w-12 h-12 bg-gray-200 rounded-full mx-auto mb-2"></div>
+                                                    <div className="h-2 w-16 bg-gray-200 rounded mx-auto mb-1"></div>
+                                                    <div className="h-2 w-10 bg-gray-200 rounded mx-auto"></div>
+                                                </div>
+                                            </div>
+                                        ))
+                                     )}
                                  </div>
                              </div>
                         </div>

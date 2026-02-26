@@ -50,12 +50,38 @@ const getHomePageConfig = async (req, res) => {
                     categories: ["Fashion", "Accessories"],
                     count: 4
                 },
-                bestSales: {
+            bestSales: {
                     title: "Best Sales",
                     subtitle: "Top rated products loved by everyone",
                     category: "Home Appliances",
                     count: 4
-                }
+                },
+                productBanners: [
+                    {
+                      id: 1,
+                      title: "Children's Items",
+                      discount: "25% OFF",
+                      bg: "bg-orange-100",
+                      image: "https://images.pexels.com/photos/1194027/pexels-photo-1194027.jpeg?auto=compress&cs=tinysrgb&w=600",
+                      buttonText: "Shop Now"
+                    },
+                    {
+                      id: 2,
+                      title: "Fashion Best Sales",
+                      discount: "Hot Deals",
+                      bg: "bg-blue-100",
+                      image: "https://images.pexels.com/photos/1536619/pexels-photo-1536619.jpeg?auto=compress&cs=tinysrgb&w=600",
+                      buttonText: "Shop Now"
+                    },
+                    {
+                      id: 3,
+                      title: "Home Appliances",
+                      discount: "Up to 40% OFF",
+                      bg: "bg-green-100",
+                      image: "https://images.pexels.com/photos/213162/pexels-photo-213162.jpeg?auto=compress&cs=tinysrgb&w=600",
+                      buttonText: "Shop Now"
+                    }
+                ]
             });
         }
 
@@ -89,6 +115,9 @@ const updateHomePageConfig = async (req, res) => {
             }
              if (req.body.bestSales) {
                  config.bestSales = { ...config.bestSales, ...req.body.bestSales };
+            }
+            if (req.body.productBanners) {
+                config.productBanners = req.body.productBanners;
             }
 
             const updatedConfig = await config.save();

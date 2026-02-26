@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { ShoppingCart, Star, Minus, Plus, Heart, ArrowLeft } from 'lucide-react';
 import { fetchProductById, fetchProducts } from '../../api/product.api';
+import { fetchStoreByVendor } from '../../api/store.api';
 import { useCart } from '../../context/CartContext';
 import { useWishlist } from '../../context/WishlistContext';
 import toast from 'react-hot-toast';
@@ -18,6 +19,7 @@ const ProductDetails = () => {
   const [product, setProduct] = useState(null);
   const [relatedProducts, setRelatedProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [store, setStore] = useState(null);
   
   useEffect(() => {
      const load = async () => {
@@ -29,7 +31,20 @@ const ProductDetails = () => {
              const allProducts = await fetchProducts();
              setRelatedProducts(allProducts.filter(p => p.category === data.category && p._id !== data._id));
 
+             // Fetch Store Details if vendorId exists
+             if (data.vendorId) {
+                 try {
+                    // Extract ID if it's in format "vendor_ID" or just "ID"
+                    const vId = data.vendorId.startsWith('vendor_') ? data.vendorId.split('_')[1] : data.vendorId;
+                    const storeData = await fetchStoreByVendor(vId);
+                    setStore(storeData);
+                 } catch (err) {
+                    console.log("Store info not found", err);
+                 }
+             }
+
          } catch (error) {
+             console.error(error);
              toast.error("Failed to load product");
              navigate('/dashboard');
          } finally {
@@ -257,7 +272,32 @@ const ProductDetails = () => {
 
              {/* Vendor Info */}
              <div className="border-t border-b border-gray-100 py-4 mb-8">
-                <p className="text-sm text-gray-500">Sold by <span className="font-bold text-gray-900">{product.vendorId}</span></p>
+                {store ? (
+                    <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-gray-100 rounded-full overflow-hidden border border-gray-200">
+                             {store.logo ? (
+                                 <img src={store.logo} alt={store.storeName} className="w-full h-full object-cover" />
+                             ) : (
+                                 <div className="w-full h-full flex items-center justify-center bg-blue-50 text-blue-600 font-bold">
+                                     {store.storeName.charAt(0)}
+                                 </div>
+                             )}
+                        </div>
+                        <div>
+                            <p className="text-sm text-gray-500">Sold by</p>
+                            <Link to={`/shop/${store.vendorId}`} className="font-bold text-gray-900 hover:text-blue-600 hover:underline">
+                                {store.storeName}
+                            </Link>
+                        </div>
+                        <Link to={`/shop/${store.vendorId}`} className="ml-auto text-xs font-bold text-blue-600 border border-blue-200 px-3 py-1.5 rounded-full hover:bg-blue-50">
+                            Visit Shop
+                        </Link>
+                    </div>
+                ) : (
+                    <div className="flex items-center gap-2">
+                        <p className="text-sm text-gray-500">Sold by <span className="font-bold text-gray-900">{product.vendorId}</span></p>
+                    </div>
+                )}
              </div>
              {/* Actions */}
              <div className="flex gap-4">

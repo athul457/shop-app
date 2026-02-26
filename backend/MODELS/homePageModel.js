@@ -48,7 +48,15 @@ const homePageSchema = new mongoose.Schema({
     subtitle: String,
     category: String,
     count: Number
-  }
+  },
+  productBanners: [{
+    id: Number,
+    title: String,
+    discount: String, 
+    buttonText: String,
+    image: String,
+    bg: String
+  }]
 }, { timestamps: true });
 
 module.exports = mongoose.model('HomePage', homePageSchema);

@@ -4,6 +4,7 @@ import { Package, ShoppingBag, BarChart3, Wallet, Store, Percent } from 'lucide-
 import useAuth from '../../hooks/useAuth';
 import { fetchProducts, createProduct, updateProduct, deleteProduct } from '../../api/product.api';
 import { getAllOrders, deliverOrder } from '../../api/order.api';
+import { fetchStoreByVendor } from '../../api/store.api';
 import toast from 'react-hot-toast';
 import VendorForm from './venderForm';
 
@@ -20,6 +21,7 @@ const VendorDashboard = () => {
     const { user, logout } = useAuth();
     const navigate = useNavigate();
     const [request, setRequest] = useState(null);
+    const [store, setStore] = useState(null);
     const [products, setProducts] = useState([]);
     const [isProductModalOpen, setIsProductModalOpen] = useState(false);
     const [editingProduct, setEditingProduct] = useState(null);
@@ -58,14 +60,12 @@ const VendorDashboard = () => {
         deliveredOrders: 0
     });
 
-    // Verify and Load Vendor Request
+    // Verify and Load Vendor Request (Keep for initial validation)
     const loadRequest = () => {
         const requests = JSON.parse(localStorage.getItem('mockVendorRequests') || '[]');
         const myRequest = requests.find(r => r.user.email === user?.email);
         
         if (!myRequest || myRequest.status !== 'approved') {
-             // If access revoked or not found, redirect (though might be jarring if just editing)
-             // For edit refresh, we assume it exists.
              if(!myRequest) navigate('/dashboard');
              return;
         } 
@@ -78,10 +78,7 @@ const VendorDashboard = () => {
     }, [user, navigate]);
 
 
-
-
     const [orders, setOrders] = useState([]);
-    // const [orderFilter, setOrderFilter] = useState('all'); // Moved to VendorOrders component
 
     // Reactive Stats Calculation
     useEffect(() => {
@@ -94,7 +91,6 @@ const VendorDashboard = () => {
         const lowStockCount = products.filter(p => Number(p.stock) < 10).length;
 
         const getOrderDate = (order) => {
-             // For sales metrics, usage 'paidAt' or 'createdAt' instead of delivery time
             return new Date(order.paidAt || order.createdAt);
         };
 
@@ -102,15 +98,10 @@ const VendorDashboard = () => {
             .filter(o => getOrderDate(o) >= startOfToday)
             .reduce((acc, order) => acc + (Number(order.totalPrice) || 0), 0);
 
-        console.log("DEBUG: Stats Calc - Orders:", orders.length);
-        console.log("DEBUG: todaySalesAmount:", todaySalesAmount);
-
         const monthlyRevenueAmount = orders
             .filter(o => getOrderDate(o) >= startOfMonth)
             .reduce((acc, order) => acc + (Number(order.totalPrice) || 0), 0);
         
-        console.log("DEBUG: monthlyRevenueAmount:", monthlyRevenueAmount);
-
         setStats({
             totalProducts: products.length,
             totalOrders: orders.length,
@@ -130,49 +121,42 @@ const VendorDashboard = () => {
             const productData = await fetchProducts(`vendor_${user._id}`);
             setProducts(productData);
 
-            // ORDERS (Fetch all, filter for 'Accepted' ones)
-            
+            // STORE
+            try {
+                const storeData = await fetchStoreByVendor(user._id);
+                setStore(storeData);
+            } catch (err) {
+                console.log("Store not found (might be first login)");
+            }
+
+            // ORDERS
             const vendorProductIds = new Set(productData.map(p => String(p._id)));
             const orderData = await getAllOrders();
             
-            console.log("DEBUG: All Orders Fetched:", orderData);
-            console.log("DEBUG: My Vendor Product IDs:", Array.from(vendorProductIds));
-
-            // Filter: Paid (Accepted by Admin) -> Filter items specific to this vendor
             const myOrders = orderData.reduce((acc, order) => {
-                if (!order.isPaid) {
-                    console.log(`DEBUG: Order ${order._id} skipped because not PAID`);
-                    return acc;
-                }
+                if (!order.isPaid) return acc;
 
-                // Find items in this order that belong to this vendor
                 const vendorItems = order.orderItems.filter(item => {
                     const itemId = item.product && typeof item.product === 'object' ? item.product._id : item.product;
                     return vendorProductIds.has(String(itemId));
                 });
 
                 if (vendorItems.length > 0) {
-                    // Calculate vendor's share of the total price (Price * Quantity)
                     const vendorTotal = vendorItems.reduce((sum, item) => {
                         const itemPrice = parseFloat(item.price) || 0;
                         const itemQty = parseInt(item.qty) || 0;
                         return sum + (itemPrice * itemQty);
                     }, 0);
 
-                    console.log(`DEBUG: Vendor Order ${order._id} Items:`, vendorItems, "Total:", vendorTotal);
-
                     acc.push({
                         ...order,
                         orderItems: vendorItems, 
                         totalPrice: vendorTotal 
                     });
-                } else {
-                     console.log(`DEBUG: Order ${order._id} skipped because NO Vendor Items`);
                 }
                 return acc;
             }, []);
 
-            console.log("DEBUG: Final Vendor Orders:", myOrders);
             setOrders(myOrders);
             
         } catch (error) {
@@ -206,21 +190,17 @@ const VendorDashboard = () => {
 
             toast.success("Order Delivered Successfully");
             
-            // Optimistic Update
             setOrders(prevOrders => 
                 prevOrders.map(o => 
                     o._id === orderId ? { ...o, isDelivered: true, deliveredAt: new Date().toISOString() } : o
                 )
             );
-            // No need to reload, useEffect will handle stats update
         } catch (error) {
             toast.error("Delivery Update Failed");
         }
     };
 
     const handleProductSubmit = async (e) => {
-        // ... (unchanged handler logic, but need to pass props down or keep here?)
-        // Actually, this handler is for the modal which is still in VendorDashboard
     };
 
     const handleEditClick = (product) => {
@@ -261,9 +241,7 @@ const VendorDashboard = () => {
                         stats={stats}
                         onAddProduct={() => {
                             setEditingProduct(null);
-                             // Reset logic moved inside the click or handled by effect
-                            setEditingProduct(null);
-                            setProductForm({ name: '', price: '', category: '', stock: '', description: '', image: '' }); // Reset form
+                            setProductForm({ name: '', price: '', category: '', stock: '', description: '', image: '' });
                             setIsProductModalOpen(true);
                         }}
                         onEditProduct={handleEditClick}
@@ -281,13 +259,13 @@ const VendorDashboard = () => {
                 );
 
             case 'analytics':
-                 return <VendorAnalytics stats={stats} orders={orders} products={products} />;
+                 return <VendorAnalytics stats={stats} orders={orders} products={products} store={store} />;
 
             case 'earnings':
                 return <VendorEarnings stats={stats} />;
 
             case 'profile':
-                return <VendorProfile request={request} user={user} onProfileUpdate={loadRequest} />;
+                return <VendorProfile store={store} user={user} products={products} onProfileUpdate={loadVendorData} />;
 
             case 'offers':
                 return <VendorOffers />;
@@ -307,7 +285,7 @@ const VendorDashboard = () => {
                 setActiveSection={setActiveSection}
                 isSidebarOpen={isSidebarOpen}
                 setSidebarOpen={setSidebarOpen}
-                storeName={request.storeName}
+                storeName={store ? store.storeName : request.storeName}
                 sidebarItems={sidebarItems}
             />
 
@@ -327,7 +305,7 @@ const VendorDashboard = () => {
                             onSuccess={() => {
                                 setIsProductModalOpen(false);
                                 setEditingProduct(null);
-                                loadVendorData(); // Use loadVendorData to refresh everything
+                                loadVendorData();
                             }} 
                             onCancel={() => setIsProductModalOpen(false)} 
                         />

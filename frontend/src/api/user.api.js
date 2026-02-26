@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = '/api/users'; // Proxy handles http://localhost:5000
+const API_URL = '/api/users'; // Proxy handles target configured in vite.config.js
 
 const getAuthHeaders = () => {
     const token = localStorage.getItem('token');

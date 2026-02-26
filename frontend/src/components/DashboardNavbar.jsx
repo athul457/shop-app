@@ -143,11 +143,11 @@ const DashboardNavbar = () => {
           {/* Right Actions */}
           <div className="flex items-center gap-3 sm:gap-6">
              
-              {/* Vendor Dashboard Link (Top Level) */}
+             {/* Vendor Dashboard Link (Top Level) */}
              {(() => {
                 const requests = JSON.parse(localStorage.getItem('mockVendorRequests') || '[]');
                 const myRequest = requests.find(r => r.user.email === user?.email);
-                if (myRequest?.status === 'approved') {
+                if (myRequest?.status === 'approved' || user?.role === 'vendor') {
                     return (
                         <Link to="/vendor" className="relative p-2 text-gray-500 hover:text-indigo-600 transition-colors group" title="Vendor Dashboard">
                             <div className="bg-indigo-50 p-2 rounded-full group-hover:bg-indigo-100 transition-colors">

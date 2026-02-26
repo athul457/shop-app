@@ -62,11 +62,16 @@ const VendorDashboard = () => {
 
     // Verify and Load Vendor Request (Keep for initial validation)
     const loadRequest = () => {
+        if (user?.role === 'vendor') {
+            setRequest({ status: 'approved', storeName: user.name + "'s Store" });
+            return;
+        }
+
         const requests = JSON.parse(localStorage.getItem('mockVendorRequests') || '[]');
         const myRequest = requests.find(r => r.user.email === user?.email);
         
         if (!myRequest || myRequest.status !== 'approved') {
-             if(!myRequest) navigate('/dashboard');
+             navigate('/dashboard');
              return;
         } 
         setRequest(myRequest);
